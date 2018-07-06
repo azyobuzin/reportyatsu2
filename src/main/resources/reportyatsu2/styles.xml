@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document-styles office:version="1.2"
+  xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+  xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+  xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+  xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+  xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0">
+  <office:font-face-decls>
+    <!-- 使用するフォントリスト -->
+    <style:font-face style:name="本文" svg:font-family="游明朝" style:font-family-generic="modern" style:font-pitch="variable" />
+    <style:font-face style:name="コード" svg:font-family="Consolas" style:font-family-generic="modern" style:font-pitch="fixed" />
+    <style:font-face style:name="コード（日本語）" svg:font-family="メイリオ" style:font-family-generic="modern" style:font-pitch="variable" />
+  </office:font-face-decls>
+  <office:styles>
+    <!-- 基本の文章スタイル -->
+    <style:default-style style:family="paragraph">
+      <!-- 見出し用にタブの大きさを指定 -->
+      <style:paragraph-properties style:tab-stop-distance="1cm" />
+      <style:text-properties style:font-name="本文" fo:font-size="10.5pt" style:font-name-asian="本文" style:font-size-asian="10.5pt" />
+    </style:default-style>
+    <style:style style:name="Standard" style:display-name="標準" style:family="paragraph">
+      <style:paragraph-properties fo:line-height="110%" />
+    </style:style>
+
+    <!-- 段落（1字下げ） -->
+    <style:style style:name="Paragraph" style:display-name="段落" style:family="paragraph" style:parent-style-name="Standard">
+      <style:paragraph-properties fo:margin-top="0.1cm" fo:margin-bottom="0.1cm" style:auto-text-indent="true"/>
+    </style:style>
+
+    <!-- 見出し -->
+    <style:style style:name="Heading1" style:display-name="見出し1" style:family="paragraph" style:parent-style-name="Standard" style:default-outline-level="1">
+      <style:paragraph-properties fo:margin-top="0.2cm" fo:margin-bottom="0.2cm" />
+      <style:text-properties fo:font-size="12pt" style:font-size-asian="12pt" />
+    </style:style>
+    <style:style style:name="Heading2" style:display-name="見出し2" style:family="paragraph" style:parent-style-name="Standard" style:default-outline-level="2">
+      <style:paragraph-properties fo:margin-top="0.1cm" fo:margin-bottom="0.1cm" />
+    </style:style>
+    <style:style style:name="Heading3" style:display-name="見出し3" style:family="paragraph" style:parent-style-name="Heading2" style:default-outline-level="3" />
+
+    <!-- 見出し番号 -->
+    <text:outline-style style:name="Outline">
+      <text:outline-level-style text:level="1" style:num-suffix="." style:num-format="1">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" />
+        </style:list-level-properties>
+      </text:outline-level-style>
+      <text:outline-level-style text:level="2" style:num-suffix="." style:num-format="1" text:display-levels="2">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" />
+        </style:list-level-properties>
+      </text:outline-level-style>
+      <text:outline-level-style text:level="3" style:num-suffix="." style:num-format="1" text:display-levels="3">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" />
+        </style:list-level-properties>
+      </text:outline-level-style>
+    </text:outline-style>
+
+    <!-- 画像ブロックのための段落 -->
+    <style:style style:name="ImageBlock" style:display-name="画像ブロック" style:family="paragraph">
+      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" />
+    </style:style>
+
+    <!-- その他のブロックの説明（図表番号） -->
+    <style:style style:name="BlockCaption" style:display-name="図表番号" style:family="paragraph">
+      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" />
+    </style:style>
+
+    <!-- 表のタイトル行 -->
+    <style:style style:name="TableHeading" style:display-name="タイトル行" style:family="paragraph" style:parent-style-name="Standard">
+      <style:paragraph-properties fo:text-align="center" />
+    </style:style>
+
+    <!-- コードブロック -->
+    <style:style style:name="CodeBlock.Code" style:display-name="コードブロック" style:family="paragraph">
+      <style:paragraph-properties fo:line-height="11pt" />
+      <style:text-properties style:font-name="コード" fo:font-size="10pt" style:font-name-asian="コード（日本語）" style:font-size-asian="10pt" />
+    </style:style>
+    <style:style style:name="CodeBlock.LineNumber" style:display-name="行番号" style:family="paragraph" style:parent-style-name="CodeBlock.Code">
+      <style:paragraph-properties fo:text-align="end" />
+    </style:style>
+
+    <!-- インラインのプログラム -->
+    <style:style style:name="Code" style:display-name="コード" style:family="text">
+      <style:text-properties style:font-name="コード" style:font-name-asian="コード（日本語）" />
+    </style:style>
+
+    <!-- シンタックスハイライト -->
+    <style:style style:name="Code.Keyword" style:display-name="キーワード" style:family="text" style:parent-style-name="Code">
+      <style:text-properties fo:color="#0000ff" />
+    </style:style>
+    <style:style style:name="Code.Literal" style:display-name="リテラル" style:family="text" style:parent-style-name="Code">
+      <style:text-properties fo:color="#a31515" />
+    </style:style>
+    <style:style style:name="Code.Comment" style:display-name="コメント" style:family="text" style:parent-style-name="Code">
+      <style:text-properties fo:color="#008000" />
+    </style:style>
+
+    <!-- ページ番号の書式 -->
+    <style:style style:name="PageNumber" style:display-name="ページ番号" style:family="paragraph">
+      <style:paragraph-properties fo:text-align="end" />
+    </style:style>
+  </office:styles>
+
+  <office:automatic-styles>
+    <!-- 用紙サイズ（A4） -->
+    <!-- 余白 左25mm、それ以外20mm -->
+    <style:page-layout style:name="StandardLayout">
+      <style:page-layout-properties fo:page-width="210mm" fo:page-height="297mm" style:print-orientation="portrait" fo:margin-top="20mm" fo:margin-bottom="20mm" fo:margin-left="25mm" fo:margin-right="20mm" />
+    </style:page-layout>
+  </office:automatic-styles>
+
+  <office:master-styles>
+    <style:master-page style:name="Standard" style:page-layout-name="StandardLayout">
+      <!-- ページ番号 -->
+      <style:header>
+        <text:p text:style-name="PageNumber"><text:page-number text:select-page="current" style:num-format="1" /></text:p>
+      </style:header>
+    </style:master-page>
+  </office:master-styles>
+</office:document-styles>

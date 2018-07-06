@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:automatic-styles
+  xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+  xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+  xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+  xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
+  <!-- 標準のセル -->
+  <style:style style:name="StandardTable.Cell" style:family="table-cell">
+    <style:table-cell-properties fo:border="0.5pt solid #000000" fo:padding-top="0in" fo:padding-bottom="0in" fo:padding-left="0.075in" fo:padding-right="0.075in" style:vertical-align="middle" fo:wrap-option="no-wrap" />
+  </style:style>
+
+  <!-- コードブロック関連 -->
+  <!-- コードブロックを囲うテーブル -->
+  <style:style style:name="CodeBlock.Table" style:family="table">
+    <style:table-properties table:align="margins" style:rel-width="100%" table:border-model="collapsing" />
+  </style:style>
+  <!-- カラム幅 -->
+  <style:style style:name="CodeBlock.LineNumberColumn" style:family="table-column">
+    <style:table-column-properties style:column-width="1cm" />
+  </style:style>
+  <style:style style:name="CodeBlock.CodeColumn" style:family="table-column">
+    <style:table-column-properties style:column-width="15.5cm" />
+  </style:style>
+  <!-- セルの設定 -->
+  <style:style style:name="CodeBlock.LineNumberCell" style:family="table-cell">
+    <style:table-cell-properties fo:background-color="#f0f0f0" style:vertical-align="top"
+      fo:border-top="none" fo:border-bottom="none" fo:border-left="0.5pt solid #000000" fo:border-right="none"
+      fo:padding-top="0cm" fo:padding-bottom="0cm" fo:padding-left="0cm" fo:padding-right="0.2cm" />
+  </style:style>
+  <style:style style:name="CodeBlock.CodeCell" style:family="table-cell">
+    <style:table-cell-properties style:vertical-align="top"
+      fo:border-top="none" fo:border-bottom="none" fo:border-left="none" fo:border-right="0.5pt solid #000000"
+      fo:padding-top="0cm" fo:padding-bottom="0cm" fo:padding-left="0.2cm" fo:padding-right="0.2cm" />
+  </style:style>
+  <!-- 最初の行（罫線とパディングが違う） -->
+  <style:style style:name="CodeBlock.LineNumberCell.First" style:family="table-cell">
+    <style:table-cell-properties fo:background-color="#f0f0f0" style:vertical-align="top"
+      fo:border-top="0.5pt solid #000000" fo:border-bottom="none" fo:border-left="0.5pt solid #000000" fo:border-right="none"
+      fo:padding-top="0.2cm" fo:padding-bottom="0cm" fo:padding-left="0cm" fo:padding-right="0.2cm" />
+  </style:style>
+  <style:style style:name="CodeBlock.CodeCell.First" style:family="table-cell">
+    <style:table-cell-properties style:vertical-align="top"
+      fo:border-top="0.5pt solid #000000" fo:border-bottom="none" fo:border-left="none" fo:border-right="0.5pt solid #000000"
+      fo:padding-top="0.2cm" fo:padding-bottom="0cm" fo:padding-left="0.2cm" fo:padding-right="0.2cm" />
+  </style:style>
+  <!-- 最後の行（罫線とパディングが違う） -->
+  <style:style style:name="CodeBlock.LineNumberCell.Last" style:family="table-cell">
+    <style:table-cell-properties fo:background-color="#f0f0f0" style:vertical-align="top"
+      fo:border-top="none" fo:border-bottom="0.5pt solid #000000" fo:border-left="0.5pt solid #000000" fo:border-right="none"
+      fo:padding-top="0cm" fo:padding-bottom="0.2cm" fo:padding-left="0cm" fo:padding-right="0.2cm" />
+  </style:style>
+  <style:style style:name="CodeBlock.CodeCell.Last" style:family="table-cell">
+    <style:table-cell-properties style:vertical-align="top"
+      fo:border-top="none" fo:border-bottom="0.5pt solid #000000" fo:border-left="none" fo:border-right="0.5pt solid #000000"
+      fo:padding-top="0cm" fo:padding-bottom="0.2cm" fo:padding-left="0.2cm" fo:padding-right="0.2cm" />
+  </style:style>
+</office:automatic-styles>

@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+compileJava.options.encoding = 'UTF-8'
+mainClassName = 'reportyatsu2.App'
+
+dependencies {
+    compile 'com.google.guava:guava:23.0'
+}
+
+repositories {
+    jcenter()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'reportyatsu2.App'
+    }
+}

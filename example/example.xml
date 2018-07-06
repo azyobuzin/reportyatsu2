@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report title="タイトル">
+  <section id="chap1" title="章">
+    <section id="sec1" title="節">
+      <p>
+        段落 → <ref target="fig1" />
+      </p>
+      <figure id="fig1" src="foo.png" zoom="0.5">
+        <caption>すごい図</caption>
+      </figure>
+      <table id="tbl1">
+        <caption>すごい表</caption>
+        <tr><th>左</th><th>右</th></tr>
+        <tr><td>あ</td><td>い</td></tr>
+      </table>
+      <codeBlock id="code1">
+        <caption>すごいプログラム</caption>
+        <code lang="java">
+<![CDATA[
+System.out.println("hello!);
+]]>
+        </code>
+      </codeBlock>
+      <ul>
+        <li>あ</li>
+        <li>
+          い
+        </li>
+      </ul>
+    </section>
+  </section>
+
+  <section title="参考文献">
+    <bibliography>
+      <cite id="ref1" title="インターネット" publisher="あの会社" href="http://example.com/" browseDate="2018-07-03" />
+      <cite id="ref2" author="あの人" title="本" publisher="あの会社" pubDate="2018-07" pages="1 10-20" />
+    </bibliography>
+  </section>
+</report>

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="report">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">ルート要素</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="section" type="section" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="title" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ja">レポートのタイトル</xsd:documentation>
+        </xsd:annotation>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="section">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">章、節、項、……</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:group ref="block" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="section" type="section" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attributeGroup ref="referable" />
+    <xsd:attribute name="title" type="xsd:string" use="required">
+      <xsd:annotation>
+        <xsd:documentation xml:lang="ja">見出し</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+
+  <xsd:group name="block">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">section 直下に配置できる要素</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="p" type="textContainer">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ja">段落</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ul" type="ul.block" />
+      <xsd:element name="ol" type="ol.block" />
+      <xsd:element name="figure" type="figure" />
+      <xsd:element name="table" type="table" />
+      <xsd:element name="codeBlock" type="codeBlock" />
+      <xsd:element name="bibliography" type="bibliography" />
+    </xsd:choice>
+  </xsd:group>
+
+  <xsd:group name="inline">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">p 直下に配置できる要素</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="ref">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ja">referable 属性を持つ要素への参照</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:attribute name="target" type="xsd:IDREF" use="required" />
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="code" type="code">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ja">文章の中に差し込むプログラム</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:group>
+
+  <xsd:attributeGroup name="referable">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">ref で参照するための属性</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="id" type="xsd:ID" />
+  </xsd:attributeGroup>
+
+  <xsd:complexType name="captionContainer" abstract="true">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">説明を設定できる要素</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="caption" type="textContainer" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ja">ブロック要素の説明</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="referable" />
+  </xsd:complexType>
+
+  <xsd:complexType name="textContainer" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">インライン要素を含むことができる文章</xsd:documentation>
+    </xsd:annotation>
+    <xsd:group ref="inline" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:complexType>
+
+  <xsd:complexType name="ul.block">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">箇条書きブロック</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="captionContainer">
+        <xsd:sequence>
+          <xsd:element name="li" type="ul.li" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ul.li" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">箇条書きの項目</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:group ref="inline" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="ul" type="ul.inner" minOccurs="0" />
+    </xsd:sequence>
+    <xsd:attributeGroup ref="referable" />
+  </xsd:complexType>
+
+  <xsd:complexType name="ul.inner">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">入れ子になった箇条書き</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="li" type="ul.li" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ol.block">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">番号付き箇条書きブロック</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="captionContainer">
+        <xsd:sequence>
+          <xsd:element name="li" type="ol.li" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ol.li" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">番号付き箇条書きの項目</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:group ref="inline" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="ol" type="ol.inner" minOccurs="0" />
+    </xsd:sequence>
+    <xsd:attributeGroup ref="referable" />
+  </xsd:complexType>
+
+  <xsd:complexType name="ol.inner">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">入れ子になった番号付き箇条書き</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="li" type="ol.li" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="figure">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">画像</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="captionContainer">
+        <xsd:attribute name="src" type="xsd:string" use="required">
+          <xsd:annotation>
+            <xsd:documentation xml:lang="ja">画像ファイルへのパス</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="zoom" default="1">
+          <xsd:annotation>
+            <xsd:documentation xml:lang="ja">画像の拡大率</xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:double">
+              <xsd:minExclusive value="0" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="table">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">表</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="captionContainer">
+        <xsd:sequence>
+          <xsd:element name="tr" maxOccurs="unbounded">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">表の行</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:choice maxOccurs="unbounded">
+                <xsd:element name="th" type="textContainer">
+                  <xsd:annotation>
+                    <xsd:documentation xml:lang="ja">見出しセル</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="td" type="textContainer">
+                  <xsd:annotation>
+                    <xsd:documentation xml:lang="ja">データセル</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="codeBlock">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">コードブロック</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="captionContainer">
+        <xsd:sequence>
+          <xsd:element name="code" type="code" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="bibliography">
+    <xsd:annotation>
+      <xsd:documentation xml:lang="ja">参考文献リスト</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="cite" maxOccurs="unbounded" >
+        <xsd:complexType>
+          <xsd:attributeGroup ref="referable" />
+          <xsd:attribute name="title" type="xsd:string" use="required">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">文献のタイトル</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="author" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">著者</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="publisher" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">出版社</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="pubDate">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">発行年（月日）</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:union memberTypes="xsd:date xsd:gYearMonth xsd:gYear" />
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="pages">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">参考にしたページまたはページの範囲のリスト</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:list>
+                <xsd:simpleType>
+                  <xsd:annotation>
+                    <xsd:documentation xml:lang="ja">ページ番号 または ページ番号-ページ番号</xsd:documentation>
+                  </xsd:annotation>
+                  <xsd:restriction base="xsd:string">
+                    <xsd:pattern value="[0-9]+(\-[0-9]+)?" />
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:list>
+            </xsd:simpleType>
+          </xsd:attribute>
+          <xsd:attribute name="href" type="xsd:anyURI">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">文献が web にあるなら、その URI</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="browseDate" type="xsd:date">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ja">閲覧日</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="code" mixed="true">
+    <xsd:attribute name="lang" type="xsd:token">
+      <xsd:annotation>
+        <xsd:documentation xml:lang="ja">プログラムの言語</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+</xsd:schema>
