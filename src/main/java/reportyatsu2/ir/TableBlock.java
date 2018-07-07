@@ -16,6 +16,6 @@ public class TableBlock extends CaptionBlock {
     @Override
     public String toString() {
         return getRows().stream().map(TableRow::toString)
-                .collect(Collectors.joining(System.lineSeparator()));
+            .collect(Collectors.joining(System.lineSeparator()));
     }
 }

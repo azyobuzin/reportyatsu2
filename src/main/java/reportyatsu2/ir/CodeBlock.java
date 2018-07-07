@@ -4,7 +4,7 @@ public class CodeBlock extends CaptionBlock {
     private final String language;
     private final String code;
 
-    public CodeBlock(String id, Integer sequenceNumber, InlineElementList caption, String language, String code) {
+    public CodeBlock(String id, int sequenceNumber, InlineElementList caption, String language, String code) {
         super(id, sequenceNumber, caption);
         this.language = language;
         this.code = code;
@@ -16,9 +16,16 @@ public class CodeBlock extends CaptionBlock {
 
     @Override
     public String toString() {
-        return new StringBuilder("```")
-                .append(getLanguage()).append(System.lineSeparator())
-                .append(getCode()).append(System.lineSeparator())
-                .append("```").toString();
+        StringBuilder sb = new StringBuilder("リスト")
+            .append(getSequenceNumber());
+
+        InlineElementList caption = getCaption();
+        if (caption != null)
+            sb.append(": ").append(caption);
+
+        return sb.append(System.lineSeparator()).append("```")
+            .append(getLanguage()).append(System.lineSeparator())
+            .append(getCode()).append(System.lineSeparator())
+            .append("```").toString();
     }
 }

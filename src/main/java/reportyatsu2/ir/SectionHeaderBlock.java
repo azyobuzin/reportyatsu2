@@ -2,17 +2,21 @@ package reportyatsu2.ir;
 
 import java.util.ArrayDeque;
 
-public class SectionHeaderBlock extends Block {
+public class SectionHeaderBlock extends Block implements Referable {
+    private final String id;
     private final String title;
     private final SectionHeaderBlock parentSection;
     private final int sequenceNumber;
 
     public SectionHeaderBlock(String id, String title, SectionHeaderBlock parentSection, int sequenceNumber) {
-        super(id);
+        this.id = id;
         this.title = title;
         this.parentSection = parentSection;
         this.sequenceNumber = sequenceNumber;
     }
+
+    @Override
+    public String getId() { return id; }
 
     public String getTitle() { return title; }
 

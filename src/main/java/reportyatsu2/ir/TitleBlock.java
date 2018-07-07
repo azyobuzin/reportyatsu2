@@ -4,7 +4,6 @@ public class TitleBlock extends Block {
     private final String title;
 
     public TitleBlock(String title) {
-        super(null);
         this.title = title;
     }
 

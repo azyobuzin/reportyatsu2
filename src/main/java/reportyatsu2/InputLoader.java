@@ -21,7 +21,7 @@ public class InputLoader {
 
     private static Schema createSchema() {
         // xsd ファイルをリソースから取り出す
-        URL schemaUrl = InputLoader.class.getResource(ResourceNames.REPORT_SCHEMA_DEFINITION);
+        URL schemaUrl = Resources.getResourceUrl(Resources.REPORT_SCHEMA_DEFINITION);
 
         try {
             // xsd ファイルを Schema として読む

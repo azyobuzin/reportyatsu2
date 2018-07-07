@@ -4,7 +4,6 @@ public class ParagraphBlock extends Block {
     private final InlineElementList inlineElements;
 
     public ParagraphBlock(InlineElementList inlineElements) {
-        super(null);
         this.inlineElements = inlineElements;
     }
 

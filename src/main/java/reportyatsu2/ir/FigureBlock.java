@@ -1,27 +1,28 @@
 package reportyatsu2.ir;
 
 public class FigureBlock extends CaptionBlock {
-    private final String pathInPackage;
+    private final String path;
     private final double zoom;
 
-    public FigureBlock(String id, Integer sequenceNumber, InlineElementList caption, String pathInPackage, double zoom) {
+    public FigureBlock(String id, int sequenceNumber, InlineElementList caption, String path, double zoom) {
         super(id, sequenceNumber, caption);
-        this.pathInPackage = pathInPackage;
+        this.path = path;
         this.zoom = zoom;
     }
 
-    public String getPathInPackage() { return pathInPackage; }
+    public String getPath() { return path; }
 
     public double getZoom() { return zoom; }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("図");
-        Integer seqNum = getSequenceNumber();
-        if (seqNum != null) sb.append(seqNum);
+        StringBuilder sb = new StringBuilder("図").append(getSequenceNumber());
+
         InlineElementList caption = getCaption();
         if (caption != null) sb.append(": ").append(caption);
-        sb.append(String.format(" (%s, %f%%)", getPathInPackage(), getZoom() * 100.0));
-        return sb.toString();
+
+        return sb.append(
+            String.format(" (%s, %f%%)", getPath(), getZoom() * 100.0)
+        ).toString();
     }
 }
