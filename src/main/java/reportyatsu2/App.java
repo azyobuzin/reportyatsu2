@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class App {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         boolean debugMode = false;
         String inputFilePath = null;
         String outputFilePath = null;
@@ -21,19 +21,19 @@ public class App {
             if (arg.length() >= 2 && arg.charAt(0) == '-') {
                 if (arg.equals("-h") || arg.equals("--help")) {
                     // 使い方を表示して終了
-                    showUsage();
+                    showUsage(false);
                     return;
                 } else if (arg.equals("-o")) {
                     // 1. すでに出力ファイルパスが指定されているなら不正
                     // 2. 「-o」が最後の引数なら、次の引数がないので不正
                     if (outputFilePath != null || i == args.length - 1)
-                        exitAsArgumentsError();
+                        abortAsArgumentsError();
 
                     // 次の引数を出力ファイルパスとして認識
                     outputFilePath = args[++i];
                 } else if (arg.startsWith("-o=")) {
                     // すでに出力ファイルパスが指定されているなら不正
-                    if (outputFilePath != null) exitAsArgumentsError();
+                    if (outputFilePath != null) abortAsArgumentsError();
 
                     // 「-o=」から始まるなら、その後ろが出力パス
                     outputFilePath = arg.substring(3);
@@ -42,11 +42,11 @@ public class App {
                     debugMode = true;
                 } else {
                     // 受理できないオプション
-                    exitAsArgumentsError();
+                    abortAsArgumentsError();
                 }
             } else if (inputFilePath != null) {
                 // すでに入力ファイルは指定されているのでエラー
-                exitAsArgumentsError();
+                abortAsArgumentsError();
             } else {
                 // この引数を入力ファイルパスとして認識
                 inputFilePath = arg;
@@ -55,32 +55,40 @@ public class App {
 
         // 入力ファイルが指定されていないのでエラー
         if (inputFilePath == null)
-            exitAsArgumentsError();
+            abortAsArgumentsError();
 
         boolean fromStdin = inputFilePath.equals("-");
 
         // 入力が標準入力だと出力ファイル名を作れないのでエラー
         if (fromStdin && outputFilePath == null)
-            exitAsArgumentsError();
+            abortAsArgumentsError();
 
         // 入力の読み込み
         Document inputDocument;
         try (InputStream inputStream = fromStdin ? System.in : new FileInputStream(inputFilePath)) {
             inputDocument = new InputLoader().loadToDom(inputStream);
         } catch (SAXException e) {
-            // 入力された XML にエラーがあった
             System.err.println("入力された XML にエラーがありました。");
             System.err.println(e.getMessage());
-            System.exit(1);
+            abort();
+        } catch (IOException e) {
+            System.err.println("入力ファイルの読み込みに失敗しました。");
+            e.printStackTrace();
+            abort();
         }
     }
 
-    private static void showUsage() {
-        System.out.println("Usage: reportyatsu2 [--debug] [-o 出力ファイル] 入力ファイル");
+    private static void showUsage(boolean isError) {
+        (isError ? System.err : System.out)
+                .println("Usage: reportyatsu2 [--debug] [-o 出力ファイル] 入力ファイル");
     }
 
-    private static void exitAsArgumentsError() {
-        showUsage();
+    private static void abort() {
         System.exit(1);
+    }
+
+    private static void abortAsArgumentsError() {
+        showUsage(true);
+        abort();
     }
 }

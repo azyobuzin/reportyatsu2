@@ -1,13 +1,13 @@
 package reportyatsu2;
 
 public class AppContext {
-    private final boolean _debugMode;
+    private final boolean debugMode;
 
     public AppContext(boolean debugMode) {
-        _debugMode = debugMode;
+        this.debugMode = debugMode;
     }
 
-    public boolean isDebugMode() { return _debugMode; }
+    public boolean isDebugMode() { return debugMode; }
 
     public void log(String format, Object... args) {
         // デバッグモードのときだけログを出力

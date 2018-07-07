@@ -42,8 +42,8 @@
           <xsd:documentation xml:lang="ja">段落</xsd:documentation>
         </xsd:annotation>
       </xsd:element>
-      <xsd:element name="ul" type="ul.block" />
-      <xsd:element name="ol" type="ol.block" />
+      <xsd:element name="ul" type="ul" />
+      <xsd:element name="ol" type="ol" />
       <xsd:element name="figure" type="figure" />
       <xsd:element name="table" type="table" />
       <xsd:element name="codeBlock" type="codeBlock" />
@@ -100,17 +100,13 @@
     <xsd:group ref="inline" minOccurs="0" maxOccurs="unbounded" />
   </xsd:complexType>
 
-  <xsd:complexType name="ul.block">
+  <xsd:complexType name="ul">
     <xsd:annotation>
-      <xsd:documentation xml:lang="ja">箇条書きブロック</xsd:documentation>
+      <xsd:documentation xml:lang="ja">箇条書き</xsd:documentation>
     </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="captionContainer">
-        <xsd:sequence>
-          <xsd:element name="li" type="ul.li" maxOccurs="unbounded" />
-        </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
+    <xsd:sequence>
+      <xsd:element name="li" type="ul.li" maxOccurs="unbounded" />
+    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="ul.li" mixed="true">
@@ -119,31 +115,18 @@
     </xsd:annotation>
     <xsd:sequence>
       <xsd:group ref="inline" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element name="ul" type="ul.inner" minOccurs="0" />
+      <xsd:element name="ul" type="ul" minOccurs="0" />
     </xsd:sequence>
     <xsd:attributeGroup ref="referable" />
   </xsd:complexType>
 
-  <xsd:complexType name="ul.inner">
+  <xsd:complexType name="ol">
     <xsd:annotation>
-      <xsd:documentation xml:lang="ja">入れ子になった箇条書き</xsd:documentation>
+      <xsd:documentation xml:lang="ja">番号付き箇条書き</xsd:documentation>
     </xsd:annotation>
     <xsd:sequence>
-      <xsd:element name="li" type="ul.li" maxOccurs="unbounded" />
+      <xsd:element name="li" type="ol.li" maxOccurs="unbounded" />
     </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="ol.block">
-    <xsd:annotation>
-      <xsd:documentation xml:lang="ja">番号付き箇条書きブロック</xsd:documentation>
-    </xsd:annotation>
-    <xsd:complexContent>
-      <xsd:extension base="captionContainer">
-        <xsd:sequence>
-          <xsd:element name="li" type="ol.li" maxOccurs="unbounded" />
-        </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="ol.li" mixed="true">
@@ -152,18 +135,9 @@
     </xsd:annotation>
     <xsd:sequence>
       <xsd:group ref="inline" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element name="ol" type="ol.inner" minOccurs="0" />
+      <xsd:element name="ol" type="ol" minOccurs="0" />
     </xsd:sequence>
     <xsd:attributeGroup ref="referable" />
-  </xsd:complexType>
-
-  <xsd:complexType name="ol.inner">
-    <xsd:annotation>
-      <xsd:documentation xml:lang="ja">入れ子になった番号付き箇条書き</xsd:documentation>
-    </xsd:annotation>
-    <xsd:sequence>
-      <xsd:element name="li" type="ol.li" maxOccurs="unbounded" />
-    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="figure">
@@ -240,7 +214,7 @@
       <xsd:documentation xml:lang="ja">参考文献リスト</xsd:documentation>
     </xsd:annotation>
     <xsd:sequence>
-      <xsd:element name="cite" maxOccurs="unbounded" >
+      <xsd:element name="literature" maxOccurs="unbounded">
         <xsd:complexType>
           <xsd:attributeGroup ref="referable" />
           <xsd:attribute name="title" type="xsd:string" use="required">
