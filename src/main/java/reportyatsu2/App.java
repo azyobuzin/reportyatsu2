@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.*;
 
 public class App {
@@ -71,6 +72,8 @@ public class App {
         try {
             FileSystem fs = FileSystems.getDefault();
             inputFilePath = fs.getPath(inputFilePathString);
+
+            // 出力ファイルパスが指定されていなければ、入力の拡張子を .odt に変えたものにする
             outputFilePath = outputFilePathString != null
                 ? fs.getPath(outputFilePathString)
                 : changeExtension(inputFilePath, ".odt");
@@ -98,11 +101,23 @@ public class App {
         }
 
         // 中間表現へ変換
-        InputToIrTransformer transformer = new InputToIrTransformer(debugMode, inputFilePath.getParent());
+        InputToIrTransformer irTransformer = new InputToIrTransformer(debugMode, inputFilePath.getParent());
         try {
-            transformer.inputDocument(inputDocument);
-        } catch (TransformException e) {
+            irTransformer.inputDocument(inputDocument);
+        } catch (InputToIrTransformException e) {
             System.err.println("入力された XML にエラーがありました。");
+            System.err.println(e.getMessage());
+            abort();
+            return;
+        }
+
+        // ODF として出力
+        IrToOdfPackageTransformer odfTransformer = new IrToOdfPackageTransformer(debugMode);
+        odfTransformer.inputIr(irTransformer);
+        try (OutputStream outputStream = Files.newOutputStream(outputFilePath)) {
+            odfTransformer.writeToStream(outputStream);
+        } catch (Exception e) {
+            System.err.println("出力ファイルの作成に失敗しました。");
             System.err.println(e.getMessage());
             abort();
             return;

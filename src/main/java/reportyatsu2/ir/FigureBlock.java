@@ -2,10 +2,18 @@ package reportyatsu2.ir;
 
 import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.Imaging;
-import reportyatsu2.TransformException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import reportyatsu2.InputToIrTransformResult;
+import reportyatsu2.InputToIrTransformException;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+
+import static reportyatsu2.OdfUtils.*;
 
 public class FigureBlock extends CaptionBlock {
     private final String path;
@@ -15,7 +23,7 @@ public class FigureBlock extends CaptionBlock {
     private final double widthInInch;
     private final double heightInInch;
 
-    public FigureBlock(String id, int sequenceNumber, InlineElementList caption, Path workingDirectory, String path, double zoom) throws TransformException {
+    public FigureBlock(String id, int sequenceNumber, InlineElementList caption, Path workingDirectory, String path, double zoom) throws InputToIrTransformException {
         super(id, sequenceNumber, caption);
         this.path = path;
 
@@ -23,14 +31,14 @@ public class FigureBlock extends CaptionBlock {
             // 絶対パスの取得
             realFilePath = workingDirectory.resolve(path);
         } catch (InvalidPathException e) {
-            throw new TransformException(String.format("パス '%s' を読み取れませんでした: %s", path, e.getMessage()), e);
+            throw new InputToIrTransformException(String.format("パス '%s' を読み取れませんでした: %s", path, e.getMessage()), e);
         }
         // 画像ファイルの解析
         ImageInfo imageInfo;
         try {
             imageInfo = Imaging.getImageInfo(realFilePath.toFile());
         } catch (Exception e) {
-            throw new TransformException(String.format("画像 '%s' の読み取りに失敗しました: %s", path, e.getMessage()), e);
+            throw new InputToIrTransformException(String.format("画像 '%s' の読み取りに失敗しました: %s", path, e.getMessage()), e);
         }
         mimeType = imageInfo.getMimeType();
         widthInInch = imageInfo.getPhysicalWidthInch() * zoom;
@@ -52,6 +60,38 @@ public class FigureBlock extends CaptionBlock {
     public double getWidthInInch() { return widthInInch; }
 
     public double getHeightInInch() { return heightInInch; }
+
+    @Override
+    protected String getSequenceName() { return "Illustration"; }
+
+    @Override
+    protected String getSequenceDisplayName() { return "図"; }
+
+    @Override
+    public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
+        Element paragraph = createParagraphElement(document, STYLE_IMAGE_BLOCK);
+
+        Element frame = document.createElementNS(NS_DRAW, "frame");
+        frame.setAttributeNS(NS_TEXT, "anchor-type", "as-char"); // 行内
+        frame.setAttributeNS(NS_STYLE, "width", String.format("%fin", getWidthInInch()));
+        frame.setAttributeNS(NS_STYLE, "height", String.format("%fin", getHeightInInch()));
+        paragraph.appendChild(frame);
+
+        Element image = document.createElementNS(NS_DRAW, "image");
+        image.setAttributeNS(NS_XLINK, "href", getPathInPackage());
+        image.setAttributeNS(NS_XLINK, "type", "simple");
+        image.setAttributeNS(NS_XLINK, "show", "embed");
+        image.setAttributeNS(NS_XLINK, "actuate", "onLoad");
+        frame.appendChild(image);
+
+        // 改行してキャプションを追加
+        paragraph.appendChild(createLineBreakElement(document));
+
+        for (Node node : createCaptionContentNodes(document, irResult))
+            paragraph.appendChild(node);
+
+        return Collections.singletonList(paragraph);
+    }
 
     @Override
     public String toString() {

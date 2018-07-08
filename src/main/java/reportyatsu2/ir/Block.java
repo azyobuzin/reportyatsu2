@@ -1,6 +1,11 @@
 package reportyatsu2.ir;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import reportyatsu2.InputToIrTransformResult;
+
+import java.util.List;
+
 public abstract class Block {
-    // TODO: ODF 形式の要素を作成
-    // TODO: 参照エレメントの作成
+    public abstract List<Node> createNodes(Document document, InputToIrTransformResult irResult);
 }

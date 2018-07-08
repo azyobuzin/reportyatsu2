@@ -45,7 +45,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         this.workingDirectory = workingDirectory;
     }
 
-    public void inputDocument(Document document) throws TransformException {
+    public void inputDocument(Document document) throws InputToIrTransformException {
         Element root = document.getDocumentElement();
         transformRoot(root);
     }
@@ -83,7 +83,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         }
     }
 
-    private void transformRoot(Element reportElement) throws TransformException {
+    private void transformRoot(Element reportElement) throws InputToIrTransformException {
         assert ROOT_ELEMENT_NAME.equals(reportElement.getTagName());
 
         // タイトルが設定されているなら、タイトルを出力
@@ -95,9 +95,14 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         Iterator<Element> sections = childElements(reportElement).iterator();
         while (sections.hasNext())
             transformSection(sections.next(), null, ++sequenceNumber);
+
+        // 見出しを 3 までしか用意していないので、それより深くなるならばエラー
+        final int SUPPORTED_OUTLINE_LEVEL = 3;
+        if (getMaxSectionDepth() > SUPPORTED_OUTLINE_LEVEL)
+            throw new InputToIrTransformException("section が深すぎます。");
     }
 
-    private void transformSection(Element sectionElement, SectionHeaderBlock parentSection, int sequenceNumber) throws TransformException {
+    private void transformSection(Element sectionElement, SectionHeaderBlock parentSection, int sequenceNumber) throws InputToIrTransformException {
         assert SECTION_ELEMENT_NAME.equals(sectionElement.getTagName());
 
         // 見出しを作成
@@ -127,7 +132,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         }
     }
 
-    private void transformBlock(Element blockElement) throws TransformException {
+    private void transformBlock(Element blockElement) throws InputToIrTransformException {
         String tagName = blockElement.getTagName();
         switch (tagName) {
             case PARAGRAPH_ELEMENT_NAME:
@@ -152,11 +157,11 @@ public class InputToIrTransformer implements InputToIrTransformResult {
                 transformBibliographyBlock(blockElement);
                 break;
             default:
-                throw new TransformException(String.format("認識できない要素 <%s>", tagName));
+                throw new InputToIrTransformException(String.format("認識できない要素 <%s>", tagName));
         }
     }
 
-    private InlineElementList transformInlineElements(Node container) throws TransformException {
+    private InlineElementList transformInlineElements(Node container) throws InputToIrTransformException {
         InlineElementList elements = new InlineElementList();
         NodeList nodes = container.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -200,7 +205,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
                             // リストはここでは無視
                             break;
                         default:
-                            throw new TransformException(String.format("認識できない要素 <%s>", tagName));
+                            throw new InputToIrTransformException(String.format("認識できない要素 <%s>", tagName));
                     }
                     break;
                 }
@@ -240,13 +245,13 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         return ""; // すべての文字が空白だった……
     }
 
-    private void transformParagraphBlock(Element pElement) throws TransformException {
+    private void transformParagraphBlock(Element pElement) throws InputToIrTransformException {
         assert PARAGRAPH_ELEMENT_NAME.equals(pElement.getTagName());
         InlineElementList inlineElements = transformInlineElements(pElement);
         addBlock(new ParagraphBlock(inlineElements));
     }
 
-    private void transformUnorderedListBlock(Element ulElement) throws TransformException {
+    private void transformUnorderedListBlock(Element ulElement) throws InputToIrTransformException {
         assert UNORDERED_LIST_ELEMENT_NAME.equals(ulElement.getTagName());
 
         ListOfItems list = transformList(ulElement);
@@ -257,7 +262,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         maxUnorderedListDepth = Math.max(maxUnorderedListDepth, block.getDepth());
     }
 
-    private void transformOrderedListBlock(Element olElement) throws TransformException {
+    private void transformOrderedListBlock(Element olElement) throws InputToIrTransformException {
         assert ORDERED_LIST_ELEMENT_NAME.equals(olElement.getTagName());
 
         ListOfItems list = transformList(olElement);
@@ -268,7 +273,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         maxOrderedListDepth = Math.max(maxOrderedListDepth, block.getDepth());
     }
 
-    private ListOfItems transformList(Element listElement) throws TransformException {
+    private ListOfItems transformList(Element listElement) throws InputToIrTransformException {
         ListOfItems list = new ListOfItems();
         Iterator<Element> elements = childElements(listElement).iterator();
         while (elements.hasNext())
@@ -276,7 +281,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         return list;
     }
 
-    private ListItem transformListItem(Element liElement) throws TransformException {
+    private ListItem transformListItem(Element liElement) throws InputToIrTransformException {
         assert LIST_ITEM_ELEMENT_NAME.equals(liElement.getTagName());
 
         InlineElementList inlineElements = transformInlineElements(liElement);
@@ -297,12 +302,12 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         return new ListItem(inlineElements, childList);
     }
 
-    private InlineElementList transformCaption(Element captionContainer) throws TransformException {
+    private InlineElementList transformCaption(Element captionContainer) throws InputToIrTransformException {
         Element element = childElement(captionContainer, CAPTION_ELEMENT_NAME);
         return element == null ? null : transformInlineElements(element);
     }
 
-    private void transformFigureBlock(Element figureElement) throws TransformException {
+    private void transformFigureBlock(Element figureElement) throws InputToIrTransformException {
         assert FIGURE_ELEMENT_NAME.equals(figureElement.getTagName());
 
         int sequenceNumber = ++figureSequenceNumber;
@@ -321,7 +326,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         addBlock(block);
     }
 
-    private void transformTableBlock(Element tableElement) throws TransformException {
+    private void transformTableBlock(Element tableElement) throws InputToIrTransformException {
         assert TABLE_ELEMENT_NAME.equals(tableElement.getTagName());
 
         int sequenceNumber = ++tableSequenceNumber;
@@ -350,7 +355,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         addBlock(block);
     }
 
-    private void transformCodeBlock(Element codeBlockElement) throws TransformException {
+    private void transformCodeBlock(Element codeBlockElement) throws InputToIrTransformException {
         assert CODE_BLOCK_ELEMENT_NAME.equals(codeBlockElement.getTagName());
 
         int sequenceNumber = ++listSequenceNumber;
@@ -367,7 +372,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         addBlock(block);
     }
 
-    private void transformBibliographyBlock(Element bibliographyElement) throws TransformException {
+    private void transformBibliographyBlock(Element bibliographyElement) throws InputToIrTransformException {
         assert BIBLIOGRAPHY_ELEMENT_NAME.equals(bibliographyElement.getTagName());
         List<Literature> literatureList = new ArrayList<>();
         Iterator<Element> childElements = childElements(bibliographyElement).iterator();
@@ -376,7 +381,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         addBlock(new BibliographyBlock(literatureList));
     }
 
-    private Literature transformLiterature(Element literatureElement) throws TransformException {
+    private Literature transformLiterature(Element literatureElement) throws InputToIrTransformException {
         assert LITERATURE_ELEMENT_NAME.equals(literatureElement.getTagName());
         int sequenceNumber = ++literatureSequenceNumber;
         String pages = getAttributeOrNull(literatureElement, "pages");
@@ -394,7 +399,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
 
     private static final Pattern PAGE_RANGE_PATTERN = Pattern.compile("([0-9]+)(?:\\-([0-9]+))?");
 
-    private static List<PageRange> parsePages(String pages) throws TransformException {
+    private static List<PageRange> parsePages(String pages) throws InputToIrTransformException {
         List<PageRange> pageRanges = new ArrayList<>();
         Matcher matcher = PAGE_RANGE_PATTERN.matcher(pages);
         while (matcher.find()) {
@@ -406,14 +411,14 @@ public class InputToIrTransformer implements InputToIrTransformResult {
                 end = endString == null ? start
                     : Integer.parseInt(endString);
             } catch (NumberFormatException e) {
-                throw new TransformException(String.format("ページ範囲 %s を読み取れませんでした。", matcher.group()));
+                throw new InputToIrTransformException(String.format("ページ範囲 %s を読み取れませんでした。", matcher.group()));
             }
 
             PageRange range;
             try {
                 range = new PageRange(start, end);
             } catch (IllegalArgumentException e) {
-                throw new TransformException(String.format("ページ範囲 %s は正しい範囲ではありません。", matcher.group()));
+                throw new InputToIrTransformException(String.format("ページ範囲 %s は正しい範囲ではありません。", matcher.group()));
             }
 
             pageRanges.add(range);

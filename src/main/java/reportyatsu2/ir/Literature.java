@@ -1,5 +1,12 @@
 package reportyatsu2.ir;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import static reportyatsu2.OdfUtils.*;
+
+import java.util.Collections;
 import java.util.List;
 
 public class Literature implements Referable {
@@ -91,6 +98,31 @@ public class Literature implements Referable {
         }
 
         return sb.toString();
+    }
+
+    public List<Node> createNodes(Document document) {
+        Element paragraph = createParagraphElement(document, STYLE_STANDARD);
+
+        // ID があるなら参照できるように bookmark を設定する
+        String id = getId();
+        if (id != null) paragraph.appendChild(createBookmarkStart(document, id));
+
+        // 内容を追加
+        for (Node node : createNodesForText(document, toStringWithoutSequenceNumber()))
+            paragraph.appendChild(node);
+
+        // bookmark 終わり
+        if (id != null) paragraph.appendChild(createBookmarkEnd(document, id));
+
+        Element listItem = document.createElementNS(NS_TEXT, "list-item");
+        listItem.appendChild(paragraph);
+        return Collections.singletonList(listItem);
+    }
+
+    @Override
+    public List<Node> createReferenceNodes(Document document) {
+        return Collections.singletonList(createChapterBookmarkRef(
+            document, getId(), String.format("[%d]", getSequenceNumber())));
     }
 
     @Override

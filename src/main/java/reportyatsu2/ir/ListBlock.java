@@ -1,6 +1,15 @@
 package reportyatsu2.ir;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import reportyatsu2.InputToIrTransformResult;
+
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static reportyatsu2.OdfUtils.*;
 
 public class ListBlock extends Block {
     private final boolean ordered;
@@ -25,6 +34,14 @@ public class ListBlock extends Block {
                 depth = Math.max(depth, getDepth(childList));
         }
         return depth + 1;
+    }
+
+    @Override
+    public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
+        Element list = getList().createElement(document, irResult);
+        // スタイルを変えることで番号を付けるか付けないかを指定する
+        list.setAttributeNS(NS_TEXT, "style-name", isOrdered() ? STYLE_ORDERED_LIST : STYLE_UNORDERED_LIST);
+        return Collections.singletonList(list);
     }
 
     @Override
