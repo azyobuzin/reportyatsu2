@@ -117,6 +117,7 @@ public class IrToOdfPackageTransformer {
         listStyle.setAttributeNS(NS_STYLE, "style:name", STYLE_UNORDERED_LIST);
         automaticStylesElement.appendChild(listStyle);
 
+        // 必要なレベルまで list-level-style を作成
         for (int level = 1; level <= depth; level++) {
             Element levelStyle = contentDocument.createElementNS(NS_TEXT, "text:list-level-style-bullet");
             levelStyle.setAttributeNS(NS_TEXT, "text:level", Integer.toString(level));
@@ -147,13 +148,16 @@ public class IrToOdfPackageTransformer {
     }
 
     private Element createListLevelProperties(int level) {
+        float marginLeft = (level + 1) * BASE_LIST_MARGIN_IN_CM;
+
         Element levelProperties = contentDocument.createElementNS(NS_STYLE, "style:list-level-properties");
         levelProperties.setAttributeNS(NS_TEXT, "text:list-level-position-and-space-mode", "label-alignment");
 
         Element labelAlignment = contentDocument.createElementNS(NS_STYLE, "style:list-level-label-alignment");
         labelAlignment.setAttributeNS(NS_TEXT, "text:label-followed-by", "listtab");
-        labelAlignment.setAttributeNS(NS_TEXT, "text:list-tab-stop-position", String.format("%fcm", (level + 1) * BASE_LIST_MARGIN_IN_CM));
-        labelAlignment.setAttributeNS(NS_FO, "fo:margin-left", String.format("%fcm", level * BASE_LIST_MARGIN_IN_CM));
+        labelAlignment.setAttributeNS(NS_TEXT, "text:list-tab-stop-position", String.format("%fcm", marginLeft));
+        labelAlignment.setAttributeNS(NS_FO, "fo:margin-left", String.format("%fcm", marginLeft));
+        labelAlignment.setAttributeNS(NS_FO, "fo:text-indent", String.format("%fcm", -BASE_LIST_MARGIN_IN_CM));
 
         levelProperties.appendChild(labelAlignment);
         return levelProperties;

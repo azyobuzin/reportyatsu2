@@ -100,8 +100,8 @@ public class Literature implements Referable {
         return sb.toString();
     }
 
-    public List<Node> createNodes(Document document) {
-        Element paragraph = createParagraphElement(document, STYLE_STANDARD);
+    public Element createElement(Document document) {
+        Element paragraph = createParagraphElement(document, STYLE_LITERATURE);
 
         // ID があるなら参照できるように bookmark を設定する
         String id = getId();
@@ -116,7 +116,7 @@ public class Literature implements Referable {
 
         Element listItem = document.createElementNS(NS_TEXT, "text:list-item");
         listItem.appendChild(paragraph);
-        return Collections.singletonList(listItem);
+        return listItem;
     }
 
     @Override

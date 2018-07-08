@@ -22,6 +22,12 @@
       <style:paragraph-properties fo:line-height="110%" />
     </style:style>
 
+    <!-- タイトル -->
+    <style:style style:name="Title" style:display-name="タイトル" style:family="paragraph" style:parent-style-name="Standard">
+      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" />
+      <style:text-properties fo:font-size="14pt" style:font-size-asian="14pt" />
+    </style:style>
+
     <!-- 段落（1字下げ） -->
     <style:style style:name="Paragraph" style:display-name="段落" style:family="paragraph" style:parent-style-name="Standard">
       <style:paragraph-properties fo:margin-top="0.1cm" fo:margin-bottom="0.1cm" style:auto-text-indent="true"/>
@@ -57,13 +63,13 @@
     </text:outline-style>
 
     <!-- 画像ブロックのための段落 -->
-    <style:style style:name="ImageBlock" style:display-name="画像ブロック" style:family="paragraph">
+    <style:style style:name="ImageBlock" style:display-name="画像ブロック" style:family="paragraph" style:parent-style-name="Standard">
       <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" />
     </style:style>
 
     <!-- その他のブロックの説明（図表番号） -->
-    <style:style style:name="BlockCaption" style:display-name="図表番号" style:family="paragraph">
-      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" />
+    <style:style style:name="BlockCaption" style:display-name="図表番号" style:family="paragraph" style:parent-style-name="Standard">
+      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0cm" />
     </style:style>
 
     <!-- 表のタイトル行 -->
@@ -89,6 +95,16 @@
     <style:style style:name="PageNumber" style:display-name="ページ番号" style:family="paragraph">
       <style:paragraph-properties fo:text-align="end" />
     </style:style>
+
+    <!-- 参考文献リスト -->
+    <text:list-style style:name="BibliographyList">
+      <text:list-level-style-number text:level="1" style:num-prefix="[" style:num-suffix="]" style:num-format="1">
+          <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+              <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="0.8cm" fo:margin-left="0.8cm" fo:text-indent="-0.8cm" />
+          </style:list-level-properties>
+      </text:list-level-style-number>
+    </text:list-style>
+    <text:list-style style:name="Literature" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="BibliographyList" />
   </office:styles>
 
   <office:automatic-styles>

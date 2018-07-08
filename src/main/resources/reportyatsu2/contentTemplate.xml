@@ -11,7 +11,7 @@
   <office:automatic-styles>
     <!-- 表 -->
     <style:style style:name="StandardTable" style:family="table">
-      <style:table-properties table:align="center" table:border-model="collapsing" />
+      <style:table-properties table:align="center" table:border-model="collapsing" fo:margin-top="0cm" fo:margin-bottom="0.3cm" />
     </style:style>
     <style:style style:name="StandardTable.Cell" style:family="table-cell">
       <style:table-cell-properties fo:border="0.5pt solid #000000" fo:padding-top="0in" fo:padding-bottom="0in" fo:padding-left="0.075in" fo:padding-right="0.075in" style:vertical-align="middle" fo:wrap-option="no-wrap" />
@@ -20,7 +20,7 @@
     <!-- コードブロック関連 -->
     <!-- コードブロックを囲うテーブル -->
     <style:style style:name="CodeBlock.Table" style:family="table">
-      <style:table-properties table:align="margins" style:rel-width="100%" table:border-model="collapsing" />
+      <style:table-properties table:align="margins" style:rel-width="100%" table:border-model="collapsing" fo:margin-top="0cm" fo:margin-bottom="0.3cm" />
     </style:style>
     <!-- カラム幅 -->
     <style:style style:name="CodeBlock.LineNumberColumn" style:family="table-column">

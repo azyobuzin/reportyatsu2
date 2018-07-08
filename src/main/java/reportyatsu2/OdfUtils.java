@@ -30,9 +30,10 @@ public final class OdfUtils {
     public static final String STYLE_CODE_BLOCK_CODE = "CodeBlock.Code";
     public static final String STYLE_CODE_BLOCK_LINE_NUMBER = "CodeBlock.LineNumber";
     public static final String STYLE_CODE = "Code";
+    public static final String STYLE_BIBLIOGRAPHY_LIST = "BibliographyList";
+    public static final String STYLE_LITERATURE = "Literature";
     public static final String STYLE_UNORDERED_LIST = "UnorderedList";
     public static final String STYLE_ORDERED_LIST = "OrderedList";
-    public static final String STYLE_BIBLIOGRAPHY_LIST = "BibliographyList";
     public static final String STYLE_STANDARD_TABLE = "StandardTable";
     public static final String STYLE_STANDARD_TABLE_CELL = "StandardTable.Cell";
     public static final String STYLE_CODE_BLOCK_TABLE = "CodeBlock.Table";

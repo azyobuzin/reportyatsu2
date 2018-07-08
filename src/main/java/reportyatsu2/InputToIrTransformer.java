@@ -383,9 +383,11 @@ public class InputToIrTransformer implements InputToIrTransformResult {
 
     private Literature transformLiterature(Element literatureElement) throws InputToIrTransformException {
         assert LITERATURE_ELEMENT_NAME.equals(literatureElement.getTagName());
+
         int sequenceNumber = ++literatureSequenceNumber;
         String pages = getAttributeOrNull(literatureElement, "pages");
-        return new Literature(
+
+        Literature literature = new Literature(
             getAttributeOrNull(literatureElement, ID_ATTRIBUTE_NAME),
             sequenceNumber,
             getAttributeOrNull(literatureElement, "title"),
@@ -395,6 +397,9 @@ public class InputToIrTransformer implements InputToIrTransformResult {
             pages == null ? null : parsePages(pages),
             getAttributeOrNull(literatureElement, "href"),
             getAttributeOrNull(literatureElement, "browseDate"));
+
+        registerReferable(literature);
+        return literature;
     }
 
     private static final Pattern PAGE_RANGE_PATTERN = Pattern.compile("([0-9]+)(?:\\-([0-9]+))?");

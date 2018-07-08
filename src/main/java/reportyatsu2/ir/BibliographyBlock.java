@@ -25,9 +25,8 @@ public class BibliographyBlock extends Block {
         Element list = document.createElementNS(NS_TEXT, "text:list");
         list.setAttributeNS(NS_TEXT, "text:style-name", STYLE_BIBLIOGRAPHY_LIST);
 
-        getLiteratureList().stream()
-            .flatMap(x -> x.createNodes(document).stream())
-            .forEach(list::appendChild);
+        for (Literature literature : getLiteratureList())
+            list.appendChild(literature.createElement(document));
 
         return Collections.singletonList(list);
     }
