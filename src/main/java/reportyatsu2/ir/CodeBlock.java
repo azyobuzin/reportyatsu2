@@ -32,15 +32,15 @@ public class CodeBlock extends CaptionBlock {
 
     @Override
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
-        Element table = document.createElementNS(NS_TABLE, "table");
-        table.setAttributeNS(NS_TABLE, "style-name", STYLE_CODE_BLOCK_TABLE);
+        Element table = document.createElementNS(NS_TABLE, "table:table");
+        table.setAttributeNS(NS_TABLE, "table:style-name", STYLE_CODE_BLOCK_TABLE);
 
-        Element lineNumberColumn = document.createElementNS(NS_TABLE, "table-column");
-        lineNumberColumn.setAttributeNS(NS_TABLE, "style-name", STYLE_CODE_BLOCK_LINE_NUMBER_COLUMN);
+        Element lineNumberColumn = document.createElementNS(NS_TABLE, "table:table-column");
+        lineNumberColumn.setAttributeNS(NS_TABLE, "table:style-name", STYLE_CODE_BLOCK_LINE_NUMBER_COLUMN);
         table.appendChild(lineNumberColumn);
 
-        Element codeColumn = document.createElementNS(NS_TABLE, "table-column");
-        codeColumn.setAttributeNS(NS_TABLE, "style-name", STYLE_CODE_BLOCK_CODE_COLUMN);
+        Element codeColumn = document.createElementNS(NS_TABLE, "table:table-column");
+        codeColumn.setAttributeNS(NS_TABLE, "table:style-name", STYLE_CODE_BLOCK_CODE_COLUMN);
         table.appendChild(codeColumn);
 
         // 行ごとに処理
@@ -66,12 +66,12 @@ public class CodeBlock extends CaptionBlock {
                 codeCellStyle = STYLE_CODE_BLOCK_CODE_CELL;
             }
 
-            Element row = document.createElementNS(NS_TABLE, "table-row");
+            Element row = document.createElementNS(NS_TABLE, "table:table-row");
             table.appendChild(row);
 
             // 行番号セル
-            Element lineNumberCell = document.createElementNS(NS_TABLE, "table-cell");
-            lineNumberCell.setAttributeNS(NS_TABLE, "style-name", lineNumberCellStyle);
+            Element lineNumberCell = document.createElementNS(NS_TABLE, "table:table-cell");
+            lineNumberCell.setAttributeNS(NS_TABLE, "table:style-name", lineNumberCellStyle);
             row.appendChild(lineNumberCell);
 
             Element lineNumberParagraph = createParagraphElement(document, STYLE_CODE_BLOCK_LINE_NUMBER);
@@ -79,8 +79,8 @@ public class CodeBlock extends CaptionBlock {
             lineNumberCell.appendChild(lineNumberParagraph);
 
             // コードセル
-            Element codeCell = document.createElementNS(NS_TABLE, "table-cell");
-            codeCell.setAttributeNS(NS_TABLE, "style-name", codeCellStyle);
+            Element codeCell = document.createElementNS(NS_TABLE, "table:table-cell");
+            codeCell.setAttributeNS(NS_TABLE, "table:style-name", codeCellStyle);
             row.appendChild(codeCell);
 
             Element codeParagraph = createParagraphElement(document, STYLE_CODE_BLOCK_CODE);

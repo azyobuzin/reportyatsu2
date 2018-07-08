@@ -31,9 +31,9 @@ public abstract class CaptionBlock extends Block implements Referable {
 
     @Override
     public List<Node> createReferenceNodes(Document document) {
-        Element sequenceRef = document.createElementNS(NS_TEXT, "sequence-ref");
-        sequenceRef.setAttributeNS(NS_TEXT, "reference-format", "category-and-value");
-        sequenceRef.setAttributeNS(NS_TEXT, "ref-name", getId());
+        Element sequenceRef = document.createElementNS(NS_TEXT, "text:sequence-ref");
+        sequenceRef.setAttributeNS(NS_TEXT, "text:reference-format", "category-and-value");
+        sequenceRef.setAttributeNS(NS_TEXT, "text:ref-name", getId());
 
         // 「図1」のような形式
         String text = getSequenceDisplayName() + getSequenceNumber();
@@ -51,13 +51,13 @@ public abstract class CaptionBlock extends Block implements Referable {
         List<Node> nodes = new ArrayList<>();
         nodes.addAll(createNodesForText(document, getSequenceDisplayName()));
 
-        Element sequence = document.createElementNS(NS_TEXT, "sequence");
+        Element sequence = document.createElementNS(NS_TEXT, "text:sequence");
         nodes.add(sequence);
 
         String id = getId();
-        if (id != null) sequence.setAttributeNS(NS_TEXT, "ref-name", id);
-        sequence.setAttributeNS(NS_TEXT, "name", getSequenceName());
-        sequence.setAttributeNS(NS_STYLE, "num-format", "1");
+        if (id != null) sequence.setAttributeNS(NS_TEXT, "text:ref-name", id);
+        sequence.setAttributeNS(NS_TEXT, "text:name", getSequenceName());
+        sequence.setAttributeNS(NS_STYLE, "style:num-format", "1");
 
         for (Node node : createNodesForText(document, Integer.toString(getSequenceNumber())))
             sequence.appendChild(node);

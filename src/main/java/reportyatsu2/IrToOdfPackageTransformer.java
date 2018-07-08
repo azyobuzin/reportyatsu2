@@ -113,15 +113,15 @@ public class IrToOdfPackageTransformer {
         int depth = irResult.getMaxUnorderedListDepth();
         if (depth <= 0) return;
 
-        Element listStyle = contentDocument.createElementNS(NS_TEXT, "list-style");
-        listStyle.setAttributeNS(NS_STYLE, "name", STYLE_UNORDERED_LIST);
+        Element listStyle = contentDocument.createElementNS(NS_TEXT, "text:list-style");
+        listStyle.setAttributeNS(NS_STYLE, "style:name", STYLE_UNORDERED_LIST);
         automaticStylesElement.appendChild(listStyle);
 
         for (int level = 1; level <= depth; level++) {
-            Element levelStyle = contentDocument.createElementNS(NS_TEXT, "list-level-style-bullet");
-            levelStyle.setAttributeNS(NS_TEXT, "level", Integer.toString(level));
+            Element levelStyle = contentDocument.createElementNS(NS_TEXT, "text:list-level-style-bullet");
+            levelStyle.setAttributeNS(NS_TEXT, "text:level", Integer.toString(level));
             // BULLETS のパターンを繰り返し使う
-            levelStyle.setAttributeNS(NS_TEXT, "bullet-char", BULLETS[(level - 1) % BULLETS.length]);
+            levelStyle.setAttributeNS(NS_TEXT, "text:bullet-char", BULLETS[(level - 1) % BULLETS.length]);
 
             levelStyle.appendChild(createListLevelProperties(level));
             listStyle.appendChild(levelStyle);
@@ -132,28 +132,28 @@ public class IrToOdfPackageTransformer {
         int depth = irResult.getMaxOrderedListDepth();
         if (depth <= 0) return;
 
-        Element listStyle = contentDocument.createElementNS(NS_TEXT, "list-style");
-        listStyle.setAttributeNS(NS_STYLE, "name", STYLE_ORDERED_LIST);
+        Element listStyle = contentDocument.createElementNS(NS_TEXT, "text:list-style");
+        listStyle.setAttributeNS(NS_STYLE, "style:name", STYLE_ORDERED_LIST);
         automaticStylesElement.appendChild(listStyle);
 
         for (int level = 1; level <= depth; level++) {
-            Element levelStyle = contentDocument.createElementNS(NS_TEXT, "list-level-style-number");
-            levelStyle.setAttributeNS(NS_TEXT, "level", Integer.toString(level));
-            levelStyle.setAttributeNS(NS_STYLE, "num-suffix", ".");
-            levelStyle.setAttributeNS(NS_STYLE, "num-format", "1");
+            Element levelStyle = contentDocument.createElementNS(NS_TEXT, "text:list-level-style-number");
+            levelStyle.setAttributeNS(NS_TEXT, "text:level", Integer.toString(level));
+            levelStyle.setAttributeNS(NS_STYLE, "style:num-suffix", ".");
+            levelStyle.setAttributeNS(NS_STYLE, "style:num-format", "1");
             levelStyle.appendChild(createListLevelProperties(level));
             listStyle.appendChild(levelStyle);
         }
     }
 
     private Element createListLevelProperties(int level) {
-        Element levelProperties = contentDocument.createElementNS(NS_STYLE, "list-level-properties");
-        levelProperties.setAttributeNS(NS_TEXT, "list-level-position-and-space-mode", "label-alignment");
+        Element levelProperties = contentDocument.createElementNS(NS_STYLE, "style:list-level-properties");
+        levelProperties.setAttributeNS(NS_TEXT, "text:list-level-position-and-space-mode", "label-alignment");
 
-        Element labelAlignment = contentDocument.createElementNS(NS_STYLE, "list-level-label-alignment");
-        labelAlignment.setAttributeNS(NS_TEXT, "label-followed-by", "listtab");
-        labelAlignment.setAttributeNS(NS_TEXT, "list-tab-stop-position", String.format("%fcm", (level + 1) * BASE_LIST_MARGIN_IN_CM));
-        labelAlignment.setAttributeNS(NS_FO, "margin-left", String.format("%fcm", level * BASE_LIST_MARGIN_IN_CM));
+        Element labelAlignment = contentDocument.createElementNS(NS_STYLE, "style:list-level-label-alignment");
+        labelAlignment.setAttributeNS(NS_TEXT, "text:label-followed-by", "listtab");
+        labelAlignment.setAttributeNS(NS_TEXT, "text:list-tab-stop-position", String.format("%fcm", (level + 1) * BASE_LIST_MARGIN_IN_CM));
+        labelAlignment.setAttributeNS(NS_FO, "fo:margin-left", String.format("%fcm", level * BASE_LIST_MARGIN_IN_CM));
 
         levelProperties.appendChild(labelAlignment);
         return levelProperties;
@@ -197,9 +197,8 @@ public class IrToOdfPackageTransformer {
 
         Document manifestDocument = documentBuilder.newDocument();
 
-        Element root = manifestDocument.createElementNS(NS_MANIFEST, "manifest");
-        root.setAttribute("xmlns:manifest", NS_MANIFEST);
-        root.setAttributeNS(NS_MANIFEST, "version", "1.2");
+        Element root = manifestDocument.createElementNS(NS_MANIFEST, "manifest:manifest");
+        root.setAttributeNS(NS_MANIFEST, "manifest:version", "1.2");
         manifestDocument.appendChild(root);
 
         // ルート
@@ -221,9 +220,9 @@ public class IrToOdfPackageTransformer {
     }
 
     private Element createFileEntry(Document document, String fullPath, String mediaType) {
-        Element fileEntry = document.createElementNS(NS_MANIFEST, "file-entry");
-        fileEntry.setAttributeNS(NS_MANIFEST, "full-path", fullPath);
-        fileEntry.setAttributeNS(NS_MANIFEST, "media-type", mediaType);
+        Element fileEntry = document.createElementNS(NS_MANIFEST, "manifest:file-entry");
+        fileEntry.setAttributeNS(NS_MANIFEST, "manifest:full-path", fullPath);
+        fileEntry.setAttributeNS(NS_MANIFEST, "manifest:media-type", mediaType);
         return fileEntry;
     }
 

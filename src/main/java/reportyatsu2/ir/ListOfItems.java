@@ -10,7 +10,7 @@ import static reportyatsu2.OdfUtils.*;
 
 public class ListOfItems extends ArrayList<ListItem> {
     public Element createElement(Document document, InputToIrTransformResult irResult) {
-        org.w3c.dom.Element list = document.createElementNS(NS_TEXT, "list");
+        org.w3c.dom.Element list = document.createElementNS(NS_TEXT, "text:list");
         for (ListItem item : this)
             list.appendChild(item.createElement(document, irResult));
         return list;

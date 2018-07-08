@@ -40,7 +40,8 @@ public class ListBlock extends Block {
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
         Element list = getList().createElement(document, irResult);
         // スタイルを変えることで番号を付けるか付けないかを指定する
-        list.setAttributeNS(NS_TEXT, "style-name", isOrdered() ? STYLE_ORDERED_LIST : STYLE_UNORDERED_LIST);
+        list.setAttributeNS(NS_TEXT, "text:style-name",
+            isOrdered() ? STYLE_ORDERED_LIST : STYLE_UNORDERED_LIST);
         return Collections.singletonList(list);
     }
 

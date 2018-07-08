@@ -26,8 +26,8 @@ public class TableCell {
         for (Node node : getInlineElements().createNodes(document, irResult))
             paragraph.appendChild(node);
 
-        Element cell = document.createElementNS(NS_TABLE, "table-cell");
-        cell.setAttributeNS(NS_TABLE, "style-name", STYLE_STANDARD_TABLE_CELL);
+        Element cell = document.createElementNS(NS_TABLE, "table:table-cell");
+        cell.setAttributeNS(NS_TABLE, "table:style-name", STYLE_STANDARD_TABLE_CELL);
         cell.appendChild(paragraph);
         return cell;
     }

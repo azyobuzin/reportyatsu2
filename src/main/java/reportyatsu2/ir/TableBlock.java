@@ -35,12 +35,12 @@ public class TableBlock extends CaptionBlock {
 
     @Override
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
-        Element table = document.createElementNS(NS_TABLE, "table");
-        table.setAttributeNS(NS_TABLE, "style-name", STYLE_STANDARD_TABLE);
+        Element table = document.createElementNS(NS_TABLE, "table:table");
+        table.setAttributeNS(NS_TABLE, "table:style-name", STYLE_STANDARD_TABLE);
 
         int columnCount = getColumnCount();
         for (int i = 0; i < columnCount; i++) {
-            Element column = document.createElementNS(NS_TABLE, "table-column");
+            Element column = document.createElementNS(NS_TABLE, "table:table-column");
             table.appendChild(column);
         }
 

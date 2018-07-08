@@ -17,8 +17,8 @@ public final class OdfUtils {
     public static final String NS_TEXT = "urn:oasis:names:tc:opendocument:xmlns:text:1.0";
     public static final String NS_STYLE = "urn:oasis:names:tc:opendocument:xmlns:style:1.0";
     public static final String NS_FO = "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0";
+    public static final String NS_SVG = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0";
     public static final String NS_XLINK = "http://www.w3.org/1999/xlink";
-    public static final String NS_XMLNS = "http://www.w3.org/2000/xmlns/";
 
     public static final String STYLE_STANDARD = "Standard";
     public static final String STYLE_TITLE = "Title";
@@ -76,35 +76,35 @@ public final class OdfUtils {
     }
 
     public static Element createSpaceElement(Document document) {
-        return document.createElementNS(NS_TEXT, "s");
+        return document.createElementNS(NS_TEXT, "text:s");
     }
 
     public static Element createLineBreakElement(Document document) {
-        return document.createElementNS(NS_TEXT, "line-break");
+        return document.createElementNS(NS_TEXT, "text:line-break");
     }
 
     public static Element createParagraphElement(Document document, String styleName) {
-        Element paragraph = document.createElementNS(NS_TEXT, "p");
-        paragraph.setAttributeNS(NS_TEXT, "style-name", styleName);
+        Element paragraph = document.createElementNS(NS_TEXT, "text:p");
+        paragraph.setAttributeNS(NS_TEXT, "text:style-name", styleName);
         return paragraph;
     }
 
     public static Element createBookmarkStart(Document document, String name) {
-        Element bookmarkStart = document.createElementNS(NS_TEXT, "bookmark-start");
-        bookmarkStart.setAttributeNS(NS_TEXT, "name", name);
+        Element bookmarkStart = document.createElementNS(NS_TEXT, "text:bookmark-start");
+        bookmarkStart.setAttributeNS(NS_TEXT, "text:name", name);
         return bookmarkStart;
     }
 
     public static Element createBookmarkEnd(Document document, String name) {
-        Element bookmarkEnd = document.createElementNS(NS_TEXT, "bookmark-end");
-        bookmarkEnd.setAttributeNS(NS_TEXT, "name", name);
+        Element bookmarkEnd = document.createElementNS(NS_TEXT, "text:bookmark-end");
+        bookmarkEnd.setAttributeNS(NS_TEXT, "text:name", name);
         return bookmarkEnd;
     }
 
     public static Element createChapterBookmarkRef(Document document, String name, String text) {
-        Element bookmarkRef = document.createElementNS(NS_TEXT, "bookmark-ref");
-        bookmarkRef.setAttributeNS(NS_TEXT, "reference-format", "chapter");
-        bookmarkRef.setAttributeNS(NS_TEXT, "ref-name", name);
+        Element bookmarkRef = document.createElementNS(NS_TEXT, "text:bookmark-ref");
+        bookmarkRef.setAttributeNS(NS_TEXT, "text:reference-format", "chapter");
+        bookmarkRef.setAttributeNS(NS_TEXT, "text:ref-name", name);
 
         for (Node node : createNodesForText(document, text))
             bookmarkRef.appendChild(node);

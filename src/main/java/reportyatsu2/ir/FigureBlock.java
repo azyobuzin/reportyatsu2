@@ -71,17 +71,17 @@ public class FigureBlock extends CaptionBlock {
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
         Element paragraph = createParagraphElement(document, STYLE_IMAGE_BLOCK);
 
-        Element frame = document.createElementNS(NS_DRAW, "frame");
-        frame.setAttributeNS(NS_TEXT, "anchor-type", "as-char"); // 行内
-        frame.setAttributeNS(NS_STYLE, "width", String.format("%fin", getWidthInInch()));
-        frame.setAttributeNS(NS_STYLE, "height", String.format("%fin", getHeightInInch()));
+        Element frame = document.createElementNS(NS_DRAW, "draw:frame");
+        frame.setAttributeNS(NS_TEXT, "text:anchor-type", "as-char"); // 行内
+        frame.setAttributeNS(NS_SVG, "svg:width", String.format("%fin", getWidthInInch()));
+        frame.setAttributeNS(NS_SVG, "svg:height", String.format("%fin", getHeightInInch()));
         paragraph.appendChild(frame);
 
-        Element image = document.createElementNS(NS_DRAW, "image");
-        image.setAttributeNS(NS_XLINK, "href", getPathInPackage());
-        image.setAttributeNS(NS_XLINK, "type", "simple");
-        image.setAttributeNS(NS_XLINK, "show", "embed");
-        image.setAttributeNS(NS_XLINK, "actuate", "onLoad");
+        Element image = document.createElementNS(NS_DRAW, "draw:image");
+        image.setAttributeNS(NS_XLINK, "xlink:href", getPathInPackage());
+        image.setAttributeNS(NS_XLINK, "xlink:type", "simple");
+        image.setAttributeNS(NS_XLINK, "xlink:show", "embed");
+        image.setAttributeNS(NS_XLINK, "xlink:actuate", "onLoad");
         frame.appendChild(image);
 
         // 改行してキャプションを追加

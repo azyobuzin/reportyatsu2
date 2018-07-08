@@ -22,8 +22,8 @@ public class BibliographyBlock extends Block {
 
     @Override
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
-        Element list = document.createElementNS(NS_TEXT, "list");
-        list.setAttributeNS(NS_TEXT, "style-name", STYLE_BIBLIOGRAPHY_LIST);
+        Element list = document.createElementNS(NS_TEXT, "text:list");
+        list.setAttributeNS(NS_TEXT, "text:style-name", STYLE_BIBLIOGRAPHY_LIST);
 
         getLiteratureList().stream()
             .flatMap(x -> x.createNodes(document).stream())

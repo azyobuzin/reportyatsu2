@@ -42,10 +42,10 @@ public class SectionHeaderBlock extends Block implements Referable {
     @Override
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
         int outlineLevel = getOutlineLevel();
-        Element header = document.createElementNS(NS_TEXT, "h");
+        Element header = document.createElementNS(NS_TEXT, "text:h");
         // Heading1, Heading2, ... という名前付け
-        header.setAttributeNS(NS_TEXT, "style-name", STYLE_HEADING_PREFIX + outlineLevel);
-        header.setAttributeNS(NS_TEXT, "outline-level", Integer.toString(outlineLevel));
+        header.setAttributeNS(NS_TEXT, "text:style-name", STYLE_HEADING_PREFIX + outlineLevel);
+        header.setAttributeNS(NS_TEXT, "text:outline-level", Integer.toString(outlineLevel));
 
         // ID が指定されているなら bookmark を設定
         String id = getId();

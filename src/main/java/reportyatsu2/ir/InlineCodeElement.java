@@ -5,10 +5,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import reportyatsu2.InputToIrTransformResult;
 
-import static reportyatsu2.OdfUtils.*;
-
 import java.util.Collections;
 import java.util.List;
+
+import static reportyatsu2.OdfUtils.*;
 
 public class InlineCodeElement extends InlineElement {
     private final String language;
@@ -25,8 +25,8 @@ public class InlineCodeElement extends InlineElement {
 
     @Override
     public List<Node> createNodes(Document document, InputToIrTransformResult irResult) {
-        Element span = document.createElementNS(NS_TEXT, "span");
-        span.setAttributeNS(NS_TEXT, "style-name", STYLE_CODE);
+        Element span = document.createElementNS(NS_TEXT, "text:span");
+        span.setAttributeNS(NS_TEXT, "text:style-name", STYLE_CODE);
 
         for (Node node : createNodesForText(document, getCode()))
             span.appendChild(node);

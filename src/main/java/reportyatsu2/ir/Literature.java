@@ -4,10 +4,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import static reportyatsu2.OdfUtils.*;
-
 import java.util.Collections;
 import java.util.List;
+
+import static reportyatsu2.OdfUtils.*;
 
 public class Literature implements Referable {
     private final String id;
@@ -114,7 +114,7 @@ public class Literature implements Referable {
         // bookmark 終わり
         if (id != null) paragraph.appendChild(createBookmarkEnd(document, id));
 
-        Element listItem = document.createElementNS(NS_TEXT, "list-item");
+        Element listItem = document.createElementNS(NS_TEXT, "text:list-item");
         listItem.appendChild(paragraph);
         return Collections.singletonList(listItem);
     }

@@ -25,7 +25,7 @@ public class ListItem {
         for (Node node : inlineElements.createNodes(document, irResult))
             paragraph.appendChild(node);
 
-        Element listItem = document.createElementNS(NS_TEXT, "list-item");
+        Element listItem = document.createElementNS(NS_TEXT, "text:list-item");
         listItem.appendChild(paragraph);
 
         ListOfItems childList = getChildList();

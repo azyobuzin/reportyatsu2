@@ -18,7 +18,7 @@ public class TableRow {
     public List<TableCell> getCells() { return cells; }
 
     public Element createElement(Document document, InputToIrTransformResult irResult) {
-        Element row = document.createElementNS(NS_TABLE, "table-row");
+        Element row = document.createElementNS(NS_TABLE, "table:table-row");
         for (TableCell cell : getCells())
             row.appendChild(cell.createElement(document, irResult));
         return row;
