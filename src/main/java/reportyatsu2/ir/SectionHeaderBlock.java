@@ -24,7 +24,7 @@ public class SectionHeaderBlock extends Block implements Referable {
 
     public int getSequenceNumber() { return sequenceNumber; }
 
-    private int getOutlineLevel() {
+    public int getOutlineLevel() {
         SectionHeaderBlock parentSection = getParentSection();
         // 自分が最上位（章）なら1、そうでないなら親+1で深さが求まる
         return parentSection == null ? 1 : parentSection.getOutlineLevel() + 1;

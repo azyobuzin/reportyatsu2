@@ -3,15 +3,15 @@ package reportyatsu2;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.*;
 
 public class App {
     public static void main(String[] args) {
         boolean debugMode = false;
-        String inputFilePath = null;
-        String outputFilePath = null;
+        String inputFilePathString = null;
+        String outputFilePathString = null;
 
         // コマンドライン引数の読み取り
         for (int i = 0; i < args.length; i++) {
@@ -26,22 +26,22 @@ public class App {
                 } else if ("-o".equals(arg)) {
                     // 1. すでに出力ファイルパスが指定されているなら不正
                     // 2. 「-o」が最後の引数なら、次の引数がないので不正
-                    if (outputFilePath != null || i == args.length - 1) {
+                    if (outputFilePathString != null || i == args.length - 1) {
                         abortAsArgumentsError();
                         return;
                     }
 
                     // 次の引数を出力ファイルパスとして認識
-                    outputFilePath = args[++i];
+                    outputFilePathString = args[++i];
                 } else if (arg.startsWith("-o=")) {
                     // すでに出力ファイルパスが指定されているなら不正
-                    if (outputFilePath != null) {
+                    if (outputFilePathString != null) {
                         abortAsArgumentsError();
                         return;
                     }
 
                     // 「-o=」から始まるなら、その後ろが出力パス
-                    outputFilePath = arg.substring(3);
+                    outputFilePathString = arg.substring(3);
                 } else if ("--debug".equals(arg)) {
                     // デバッグモード
                     debugMode = true;
@@ -50,33 +50,40 @@ public class App {
                     abortAsArgumentsError();
                     return;
                 }
-            } else if (inputFilePath != null) {
+            } else if (inputFilePathString != null) {
                 // すでに入力ファイルは指定されているのでエラー
                 abortAsArgumentsError();
                 return;
             } else {
                 // この引数を入力ファイルパスとして認識
-                inputFilePath = arg;
+                inputFilePathString = arg;
             }
         }
 
         // 入力ファイルが指定されていないのでエラー
-        if (inputFilePath == null) {
+        if (inputFilePathString == null) {
             abortAsArgumentsError();
             return;
         }
 
-        boolean fromStdin = "-".equals(inputFilePath);
-
-        // 入力が標準入力だと出力ファイル名を作れないのでエラー
-        if (fromStdin && outputFilePath == null) {
-            abortAsArgumentsError();
+        Path inputFilePath;
+        Path outputFilePath;
+        try {
+            FileSystem fs = FileSystems.getDefault();
+            inputFilePath = fs.getPath(inputFilePathString);
+            outputFilePath = outputFilePathString != null
+                ? fs.getPath(outputFilePathString)
+                : changeExtension(inputFilePath, ".odt");
+        } catch (InvalidPathException e) {
+            System.err.println("指定されたパスにエラーがありました。");
+            System.err.println(e.getMessage());
+            abort();
             return;
         }
 
         // 入力の読み込み
         Document inputDocument;
-        try (InputStream inputStream = fromStdin ? System.in : new FileInputStream(inputFilePath)) {
+        try (InputStream inputStream = Files.newInputStream(inputFilePath)) {
             inputDocument = new InputLoader().loadToDom(inputStream);
         } catch (SAXException e) {
             System.err.println("入力された XML にエラーがありました。");
@@ -91,7 +98,7 @@ public class App {
         }
 
         // 中間表現へ変換
-        InputToIrTransformer transformer = new InputToIrTransformer(debugMode);
+        InputToIrTransformer transformer = new InputToIrTransformer(debugMode, inputFilePath.getParent());
         try {
             transformer.inputDocument(inputDocument);
         } catch (TransformException e) {
@@ -114,5 +121,17 @@ public class App {
     private static void abortAsArgumentsError() {
         showUsage(true);
         abort();
+    }
+
+    private static Path changeExtension(Path source, String newExtension) {
+        String name = source.getFileName().toString();
+        // 最後の「.」より後ろの newExtension で置き換える
+        // 「.」がなければ付け加える
+        int dotIndex = name.lastIndexOf('.');
+        String newName = dotIndex < 0
+            ? name + newExtension
+            : name.substring(0, dotIndex) + newExtension;
+        // ファイル名部を新しい名前に置き換え
+        return source.resolveSibling(newName);
     }
 }

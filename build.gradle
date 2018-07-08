@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'java'
     id 'application'
 }
@@ -7,11 +8,14 @@ compileJava.options.encoding = 'UTF-8'
 mainClassName = 'reportyatsu2.App'
 
 dependencies {
-    compile 'com.google.guava:guava:23.0'
+    compile 'org.apache.commons:commons-imaging:1.0-SNAPSHOT'
 }
 
 repositories {
     jcenter()
+    maven {
+        url 'https://repository.apache.org/content/repositories/snapshots/'
+    }
 }
 
 jar {

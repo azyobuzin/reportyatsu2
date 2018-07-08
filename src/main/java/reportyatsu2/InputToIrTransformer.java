@@ -3,13 +3,14 @@ package reportyatsu2;
 import org.w3c.dom.*;
 import reportyatsu2.ir.*;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class InputToIrTransformer {
+public class InputToIrTransformer implements InputToIrTransformResult {
     private static final String ROOT_ELEMENT_NAME = "report";
     private static final String SECTION_ELEMENT_NAME = "section";
     private static final String PARAGRAPH_ELEMENT_NAME = "p";
@@ -27,16 +28,21 @@ public class InputToIrTransformer {
     private static final String ID_ATTRIBUTE_NAME = "id";
     private static final String CODE_LANGUAGE_ATTRIBUTE_NAME = "lang";
 
-    private boolean debugMode;
+    private final boolean debugMode;
+    private final Path workingDirectory;
     private final List<Block> blocks = new ArrayList<>();
     private final Map<String, Referable> idMap = new HashMap<>();
     private int figureSequenceNumber;
     private int tableSequenceNumber;
     private int listSequenceNumber;
     private int literatureSequenceNumber;
+    private int maxSectionDepth;
+    private int maxUnorderedListDepth;
+    private int maxOrderedListDepth;
 
-    public InputToIrTransformer(boolean debugMode) {
+    public InputToIrTransformer(boolean debugMode, Path workingDirectory) {
         this.debugMode = debugMode;
+        this.workingDirectory = workingDirectory;
     }
 
     public void inputDocument(Document document) throws TransformException {
@@ -44,9 +50,20 @@ public class InputToIrTransformer {
         transformRoot(root);
     }
 
+    @Override
     public List<Block> getBlocks() { return Collections.unmodifiableList(blocks); }
 
+    @Override
     public Map<String, Referable> getIdMap() { return Collections.unmodifiableMap(idMap); }
+
+    @Override
+    public int getMaxSectionDepth() { return maxSectionDepth; }
+
+    @Override
+    public int getMaxUnorderedListDepth() { return maxUnorderedListDepth; }
+
+    @Override
+    public int getMaxOrderedListDepth() { return maxOrderedListDepth; }
 
     private void log(String format, Object... args) {
         // デバッグモードのときだけログを出力
@@ -70,7 +87,7 @@ public class InputToIrTransformer {
         assert ROOT_ELEMENT_NAME.equals(reportElement.getTagName());
 
         // タイトルが設定されているなら、タイトルを出力
-        String title = reportElement.getAttribute("title");
+        String title = getAttributeOrNull(reportElement, "title");
         if (title != null) addBlock(new TitleBlock(title));
 
         // 子 section を処理
@@ -85,11 +102,15 @@ public class InputToIrTransformer {
 
         // 見出しを作成
         SectionHeaderBlock header = new SectionHeaderBlock(
-            sectionElement.getAttribute(ID_ATTRIBUTE_NAME),
-            sectionElement.getAttribute("title"),
+            getAttributeOrNull(sectionElement, ID_ATTRIBUTE_NAME),
+            getAttributeOrNull(sectionElement, "title"),
             parentSection,
             sequenceNumber);
         addBlock(header);
+
+        // セクションの最大深さを更新
+        int outlineLevel = header.getOutlineLevel();
+        maxSectionDepth = Math.max(maxSectionDepth, outlineLevel);
 
         // 子要素を処理
         int childSectionNumber = 0;
@@ -196,7 +217,7 @@ public class InputToIrTransformer {
     private InlineCodeElement transformInlineCode(Element codeElement) {
         assert CODE_ELEMENT_NAME.equals(codeElement.getTagName());
         return new InlineCodeElement(
-            codeElement.getAttribute(CODE_LANGUAGE_ATTRIBUTE_NAME),
+            getAttributeOrNull(codeElement, CODE_LANGUAGE_ATTRIBUTE_NAME),
             getCodeContent(codeElement));
     }
 
@@ -227,14 +248,24 @@ public class InputToIrTransformer {
 
     private void transformUnorderedListBlock(Element ulElement) throws TransformException {
         assert UNORDERED_LIST_ELEMENT_NAME.equals(ulElement.getTagName());
+
         ListOfItems list = transformList(ulElement);
-        addBlock(new ListBlock(false, list));
+        ListBlock block = new ListBlock(false, list);
+        addBlock(block);
+
+        // 最大深さ更新
+        maxUnorderedListDepth = Math.max(maxUnorderedListDepth, block.getDepth());
     }
 
     private void transformOrderedListBlock(Element olElement) throws TransformException {
         assert ORDERED_LIST_ELEMENT_NAME.equals(olElement.getTagName());
+
         ListOfItems list = transformList(olElement);
-        addBlock(new ListBlock(true, list));
+        ListBlock block = new ListBlock(true, list);
+        addBlock(block);
+
+        // 最大深さ更新
+        maxOrderedListDepth = Math.max(maxOrderedListDepth, block.getDepth());
     }
 
     private ListOfItems transformList(Element listElement) throws TransformException {
@@ -275,14 +306,15 @@ public class InputToIrTransformer {
         assert FIGURE_ELEMENT_NAME.equals(figureElement.getTagName());
 
         int sequenceNumber = ++figureSequenceNumber;
-        String zoomString = figureElement.getAttribute("zoom");
+        String zoomString = getAttributeOrNull(figureElement, "zoom");
         double zoom = zoomString != null ? Double.parseDouble(zoomString) : 1.0;
 
         FigureBlock block = new FigureBlock(
-            figureElement.getAttribute(ID_ATTRIBUTE_NAME),
+            getAttributeOrNull(figureElement, ID_ATTRIBUTE_NAME),
             sequenceNumber,
             transformCaption(figureElement),
-            figureElement.getAttribute("src"),
+            workingDirectory,
+            getAttributeOrNull(figureElement, "src"),
             zoom);
 
         registerReferable(block);
@@ -309,7 +341,7 @@ public class InputToIrTransformer {
         }
 
         TableBlock block = new TableBlock(
-            tableElement.getAttribute(ID_ATTRIBUTE_NAME),
+            getAttributeOrNull(tableElement, ID_ATTRIBUTE_NAME),
             sequenceNumber,
             transformCaption(tableElement),
             rows);
@@ -325,10 +357,10 @@ public class InputToIrTransformer {
         Element codeElement = childElement(codeBlockElement, CODE_ELEMENT_NAME);
 
         CodeBlock block = new CodeBlock(
-            codeBlockElement.getAttribute(ID_ATTRIBUTE_NAME),
+            getAttributeOrNull(codeBlockElement, ID_ATTRIBUTE_NAME),
             sequenceNumber,
             transformCaption(codeBlockElement),
-            codeElement.getAttribute(CODE_LANGUAGE_ATTRIBUTE_NAME),
+            getAttributeOrNull(codeElement, CODE_LANGUAGE_ATTRIBUTE_NAME),
             getCodeContent(codeElement));
 
         registerReferable(block);
@@ -341,23 +373,23 @@ public class InputToIrTransformer {
         Iterator<Element> childElements = childElements(bibliographyElement).iterator();
         while (childElements.hasNext())
             literatureList.add(transformLiterature(childElements.next()));
-        blocks.add(new BibliographyBlock(literatureList));
+        addBlock(new BibliographyBlock(literatureList));
     }
 
     private Literature transformLiterature(Element literatureElement) throws TransformException {
         assert LITERATURE_ELEMENT_NAME.equals(literatureElement.getTagName());
         int sequenceNumber = ++literatureSequenceNumber;
-        String pages = literatureElement.getAttribute("pages");
+        String pages = getAttributeOrNull(literatureElement, "pages");
         return new Literature(
-            literatureElement.getAttribute(ID_ATTRIBUTE_NAME),
+            getAttributeOrNull(literatureElement, ID_ATTRIBUTE_NAME),
             sequenceNumber,
-            literatureElement.getAttribute("title"),
-            literatureElement.getAttribute("author"),
-            literatureElement.getAttribute("publisher"),
-            literatureElement.getAttribute("pubDate"),
+            getAttributeOrNull(literatureElement, "title"),
+            getAttributeOrNull(literatureElement, "author"),
+            getAttributeOrNull(literatureElement, "publisher"),
+            getAttributeOrNull(literatureElement, "pubDate"),
             pages == null ? null : parsePages(pages),
-            literatureElement.getAttribute("href"),
-            literatureElement.getAttribute("browseDate"));
+            getAttributeOrNull(literatureElement, "href"),
+            getAttributeOrNull(literatureElement, "browseDate"));
     }
 
     private static final Pattern PAGE_RANGE_PATTERN = Pattern.compile("([0-9]+)(?:\\-([0-9]+))?");
@@ -406,6 +438,11 @@ public class InputToIrTransformer {
 
     private static Element childElement(Node node, String name) {
         return childElements(node, name).findFirst().orElse(null);
+    }
+
+    private static String getAttributeOrNull(Element element, String attributeName) {
+        return element.hasAttribute(attributeName)
+            ? element.getAttribute(attributeName) : null;
     }
 
     private static final Pattern REMOVE_WHITE_SPACE_PATTERN = Pattern.compile("(?<=\\P{InCJK Symbols and Punctuation})\\s+(?=[\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}])");

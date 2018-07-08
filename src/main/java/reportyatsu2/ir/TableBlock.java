@@ -13,6 +13,12 @@ public class TableBlock extends CaptionBlock {
 
     public List<TableRow> getRows() { return rows; }
 
+    public int getColumnCount() {
+        return getRows().stream()
+            .mapToInt(row -> row.getCells().size())
+            .max().orElse(0);
+    }
+
     @Override
     public String toString() {
         return getRows().stream().map(TableRow::toString)
