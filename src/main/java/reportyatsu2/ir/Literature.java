@@ -89,6 +89,7 @@ public class Literature implements Referable {
         if (browseDate != null) {
             sb.append(DELIMITER);
             appendDate(browseDate, sb);
+            sb.append("閲覧");
         }
 
         String href = getHref();

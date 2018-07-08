@@ -35,11 +35,11 @@
 
     <!-- 見出し -->
     <style:style style:name="Heading1" style:display-name="見出し1" style:family="paragraph" style:parent-style-name="Standard" style:default-outline-level="1">
-      <style:paragraph-properties fo:margin-top="0.2cm" fo:margin-bottom="0.2cm" />
+      <style:paragraph-properties fo:margin-top="0.2cm" fo:margin-bottom="0.2cm" fo:keep-with-next="always" />
       <style:text-properties fo:font-size="12pt" style:font-size-asian="12pt" />
     </style:style>
     <style:style style:name="Heading2" style:display-name="見出し2" style:family="paragraph" style:parent-style-name="Standard" style:default-outline-level="2">
-      <style:paragraph-properties fo:margin-top="0.1cm" fo:margin-bottom="0.1cm" />
+      <style:paragraph-properties fo:margin-top="0.1cm" fo:margin-bottom="0.1cm" fo:keep-with-next="always" />
     </style:style>
     <style:style style:name="Heading3" style:display-name="見出し3" style:family="paragraph" style:parent-style-name="Heading2" style:default-outline-level="3" />
 
@@ -64,12 +64,12 @@
 
     <!-- 画像ブロックのための段落 -->
     <style:style style:name="ImageBlock" style:display-name="画像ブロック" style:family="paragraph" style:parent-style-name="Standard">
-      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" />
+      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" fo:keep-together="always" />
     </style:style>
 
     <!-- その他のブロックの説明（図表番号） -->
     <style:style style:name="BlockCaption" style:display-name="図表番号" style:family="paragraph" style:parent-style-name="Standard">
-      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0cm" />
+      <style:paragraph-properties fo:text-align="center" fo:margin-top="0.3cm" fo:margin-bottom="0cm" fo:keep-with-next="always" />
     </style:style>
 
     <!-- 表のタイトル行 -->
@@ -104,7 +104,7 @@
           </style:list-level-properties>
       </text:list-level-style-number>
     </text:list-style>
-    <text:list-style style:name="Literature" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="BibliographyList" />
+    <style:style style:name="Literature" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="BibliographyList" />
   </office:styles>
 
   <office:automatic-styles>

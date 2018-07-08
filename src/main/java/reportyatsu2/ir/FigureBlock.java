@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 import reportyatsu2.InputToIrTransformResult;
 import reportyatsu2.InputToIrTransformException;
 
+import java.nio.file.FileSystems;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -29,7 +30,9 @@ public class FigureBlock extends CaptionBlock {
 
         try {
             // 絶対パスの取得
-            realFilePath = workingDirectory.resolve(path);
+            realFilePath = workingDirectory != null
+                ? workingDirectory.resolve(path)
+                : FileSystems.getDefault().getPath(path);
         } catch (InvalidPathException e) {
             throw new InputToIrTransformException(String.format("パス '%s' を読み取れませんでした: %s", path, e.getMessage()), e);
         }

@@ -111,6 +111,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
             getAttributeOrNull(sectionElement, "title"),
             parentSection,
             sequenceNumber);
+        registerReferable(header);
         addBlock(header);
 
         // セクションの最大深さを更新
@@ -455,7 +456,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
             ? element.getAttribute(attributeName) : null;
     }
 
-    private static final Pattern REMOVE_WHITE_SPACE_PATTERN = Pattern.compile("(?<=\\P{InCJK Symbols and Punctuation})\\s+(?=[\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}])");
+    private static final Pattern REMOVE_WHITE_SPACE_PATTERN = Pattern.compile("(?<=\\p{InCJK Symbols and Punctuation})\\s+(?=[\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}])");
     private static final Pattern UNIFY_WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
 
     private static String normalizeText(String text, boolean trimStart) {

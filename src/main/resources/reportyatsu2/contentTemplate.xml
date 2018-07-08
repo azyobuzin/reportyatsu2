@@ -20,7 +20,7 @@
     <!-- コードブロック関連 -->
     <!-- コードブロックを囲うテーブル -->
     <style:style style:name="CodeBlock.Table" style:family="table">
-      <style:table-properties table:align="margins" style:rel-width="100%" table:border-model="collapsing" fo:margin-top="0cm" fo:margin-bottom="0.3cm" />
+      <style:table-properties table:align="margins" style:rel-width="100%" fo:margin-top="0cm" fo:margin-bottom="0.3cm" />
     </style:style>
     <!-- カラム幅 -->
     <style:style style:name="CodeBlock.LineNumberColumn" style:family="table-column">
