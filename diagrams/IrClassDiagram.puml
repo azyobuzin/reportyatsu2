@@ -1,0 +1,153 @@
+@startuml
+
+abstract class Block {
+{abstract} createNodes(...): List<dom.Node>
+}
+
+interface Referable {
+id: String
+createReferenceNodes(...): List<dom.Node>
+}
+
+class TitleBlock {
+title: String
+}
+Block <|-- TitleBlock
+
+class SectionHeaderBlock {
+id: String
+title: String
+parentSection: SectionHeaderBlock
+sequenceNumber: int
+}
+SectionHeaderBlock "1" -- "0..1" SectionHeaderBlock
+Block <|-- SectionHeaderBlock
+Referable <|.. SectionHeaderBlock
+
+class ParagraphBlock {
+inlineElements: InlineElementList
+}
+Block <|-- ParagraphBlock
+
+class ListBlock {
+isOrdered: boolean
+list: ListOfItems
+}
+Block <|-- ListBlock
+
+abstract class CaptionBlock {
+id: String
+sequenceNumber: int
+caption: InlineElementList
+{abstract} getSequenceName(): String
+{abstract} getSequenceDisplayName(): String
+}
+Block <|-- CaptionBlock
+Referable <|.. CaptionBlock
+
+class FigureBlock {
+path: String
+realFilePath: Path
+pathInPackage: String
+mimeType: String
+displayWidthInInch: double
+displayHeightInInch: double
+}
+CaptionBlock <|-- FigureBlock
+
+class TableBlock {
+rows: List<TableRow>
+}
+CaptionBlock <|-- TableBlock
+
+class CodeBlock {
+language: String
+code: String
+}
+CaptionBlock <|-- CodeBlock
+
+class BibliographyBlock {
+literatureList: List<Literature>
+}
+Block <|-- BibliographyBlock
+
+
+abstract class InlineElement {
+{abstract} createNodes(...): List<dom.Node>
+}
+
+class InlineElementList {
+createNodes(...): List<dom.Node>
+}
+InlineElementList "1" *-- "0..*" InlineElement
+
+class TextElement {
+text: String
+}
+InlineElement <|-- TextElement
+
+class ReferenceElement {
+targetId: String
+}
+InlineElement <|-- ReferenceElement
+
+class InlineCodeElement {
+language: String
+code: String
+}
+InlineElement <|-- InlineCodeElement
+
+
+class ListOfItems {
+createElement(...): dom.Element
+}
+ListBlock "1" *-- "1" ListOfItems
+ListOfItems "1" o-- "1..*" ListItem
+
+class ListItem {
+inlineElements: InlineElements
+childList: ListOfItems
+createElement(...): dom.Element
+}
+ListItem "1" *-- "1" InlineElementList
+ListItem "1" o-- "0..1" ListOfItems
+
+class TableRow {
+cells: List<TableCell>
+createElement(...): dom.Element
+}
+TableBlock "1" o-- "1..*" TableRow
+
+class TableCell {
+isHeader: boolean
+inlineElements: InlineElementList
+createElement(...): dom.Element
+}
+TableRow "1" o-- "1..*" TableCell
+TableCell "1" *-- "1" InlineElementList
+
+class Literature {
+id: String
+sequenceNumber: int
+title: String
+author: String
+publisher: String
+pubDate: String
+pages: List<PageRange>
+href: String
+browseDate: String
+createElement(...): dom.Element
+}
+BibliographyBlock "1" o-- "1..*" Literature
+Literature "1" o-- "0..*" PageRange
+Referable <|.. Literature
+
+class PageRange {
+start: int
+end: int
+}
+
+ParagraphBlock "1" *-- "1" InlineElementList
+CaptionBlock "1" *-- "0..1" InlineElementList
+
+@enduml
