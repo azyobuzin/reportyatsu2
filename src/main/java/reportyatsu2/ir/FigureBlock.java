@@ -17,12 +17,14 @@ import java.util.List;
 import static reportyatsu2.OdfUtils.*;
 
 public class FigureBlock extends CaptionBlock {
+    private final double DEFAULT_DPI = 72.0;
+
     private final String path;
     private final Path realFilePath;
     private final String pathInPackage;
     private final String mimeType;
-    private final double widthInInch;
-    private final double heightInInch;
+    private final double displayWidthInInch;
+    private final double displayHeightInInch;
 
     public FigureBlock(String id, int sequenceNumber, InlineElementList caption, Path workingDirectory, String path, double zoom) throws InputToIrTransformException {
         super(id, sequenceNumber, caption);
@@ -43,13 +45,20 @@ public class FigureBlock extends CaptionBlock {
         } catch (Exception e) {
             throw new InputToIrTransformException(String.format("画像 '%s' の読み取りに失敗しました: %s", path, e.getMessage()), e);
         }
-        mimeType = imageInfo.getMimeType();
-        widthInInch = imageInfo.getPhysicalWidthInch() * zoom;
-        assert widthInInch > 0.0;
-        heightInInch = imageInfo.getPhysicalHeightInch() * zoom;
-        assert heightInInch > 0.0;
+
+        double imageWidthInInch = imageInfo.getPhysicalWidthInch();
+        if (imageWidthInInch < 0)
+            imageWidthInInch = imageInfo.getWidth() / DEFAULT_DPI;
+        displayWidthInInch = imageWidthInInch * zoom;
+
+        double imageHeightInInch = imageInfo.getPhysicalHeightInch();
+        if (imageHeightInInch < 0)
+            imageHeightInInch = imageInfo.getHeight() / DEFAULT_DPI;
+        displayHeightInInch = imageHeightInInch * zoom;
+
         // ファイル形式がわかったので、パッケージ内でのファイル名を確定する
         pathInPackage = String.format("figure%d.%s", sequenceNumber, imageInfo.getFormat().getExtension());
+        mimeType = imageInfo.getMimeType();
     }
 
     public String getPath() { return path; }
@@ -60,9 +69,9 @@ public class FigureBlock extends CaptionBlock {
 
     public String getMimeType() { return mimeType; }
 
-    public double getWidthInInch() { return widthInInch; }
+    public double getDisplayWidthInInch() { return displayWidthInInch; }
 
-    public double getHeightInInch() { return heightInInch; }
+    public double getDisplayHeightInInch() { return displayHeightInInch; }
 
     @Override
     protected String getSequenceName() { return "Illustration"; }
@@ -76,8 +85,8 @@ public class FigureBlock extends CaptionBlock {
 
         Element frame = document.createElementNS(NS_DRAW, "draw:frame");
         frame.setAttributeNS(NS_TEXT, "text:anchor-type", "as-char"); // 行内
-        frame.setAttributeNS(NS_SVG, "svg:width", String.format("%fin", getWidthInInch()));
-        frame.setAttributeNS(NS_SVG, "svg:height", String.format("%fin", getHeightInInch()));
+        frame.setAttributeNS(NS_SVG, "svg:width", String.format("%fin", getDisplayWidthInInch()));
+        frame.setAttributeNS(NS_SVG, "svg:height", String.format("%fin", getDisplayHeightInInch()));
         paragraph.appendChild(frame);
 
         Element image = document.createElementNS(NS_DRAW, "draw:image");
@@ -104,7 +113,7 @@ public class FigureBlock extends CaptionBlock {
         if (caption != null) sb.append(": ").append(caption);
 
         return sb.append(
-            String.format(" (%s, %fin x %fin)", getPath(), getWidthInInch(), getHeightInInch())
+            String.format(" (%s, %fin x %fin)", getPath(), getDisplayWidthInInch(), getDisplayHeightInInch())
         ).toString();
     }
 }
