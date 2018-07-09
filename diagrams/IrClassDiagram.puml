@@ -79,7 +79,7 @@ abstract class InlineElement {
 class InlineElementList {
 createNodes(...): List<dom.Node>
 }
-InlineElementList "1" *-- "0..*" InlineElement
+InlineElementList "1" o-- "0..*" InlineElement
 
 class TextElement {
 text: String
@@ -110,7 +110,7 @@ childList: ListOfItems
 createElement(...): dom.Element
 }
 ListItem "1" *-- "1" InlineElementList
-ListItem "1" o-- "0..1" ListOfItems
+ListItem "1" -- "0..1" ListOfItems
 
 class TableRow {
 cells: List<TableCell>

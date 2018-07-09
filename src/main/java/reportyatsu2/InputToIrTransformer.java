@@ -182,7 +182,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
                     if (isPrevElementText) text = ((TextElement) prevElement).getText() + text;
 
                     // 空白をうまいことする。最初の要素ならば、最初の空白もすべて削除する
-                    text = normalizeText(text, isFirstElement);
+                    text = normalizeWhitespace(text, isFirstElement);
 
                     // 結合したなら上書き、そうでないなら追加
                     TextElement element = new TextElement(text);
@@ -235,7 +235,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
         String content = codeElement.getTextContent();
 
         // 最初の空行を削除する
-        content = LEADING_EMPTY_LINES_PATTERN.matcher(content).replaceAll("");
+        content = LEADING_EMPTY_LINES_PATTERN.matcher(content).replaceFirst("");
 
         // 後ろから順に読んでいき、空白でない文字があったら、そこまでを返す
         for (int i = content.length() - 1; i >= 0; i--) {
@@ -459,7 +459,7 @@ public class InputToIrTransformer implements InputToIrTransformResult {
     private static final Pattern REMOVE_WHITE_SPACE_PATTERN = Pattern.compile("(?<=\\p{InCJK Symbols and Punctuation})\\s+(?=[\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}])");
     private static final Pattern UNIFY_WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
 
-    private static String normalizeText(String text, boolean trimStart) {
+    private static String normalizeWhitespace(String text, boolean trimStart) {
         if (trimStart) {
             // 最初の空白を消す
             int notWhiteSpaceIndex = 0;
