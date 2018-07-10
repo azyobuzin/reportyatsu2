@@ -79,7 +79,7 @@
       <text:sequence-decls>
         <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />
         <text:sequence-decl text:display-outline-level="0" text:name="Table" />
-        <text:sequence-decl text:display-outline-level="0" text:name="List" />
+        <text:sequence-decl text:display-outline-level="0" text:name="リスト" />
       </text:sequence-decls>
     </office:text>
   </office:body>

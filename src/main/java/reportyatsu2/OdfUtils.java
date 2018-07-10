@@ -102,15 +102,4 @@ public final class OdfUtils {
         bookmarkEnd.setAttributeNS(NS_TEXT, "text:name", name);
         return bookmarkEnd;
     }
-
-    public static Element createChapterBookmarkRef(Document document, String name, String text) {
-        Element bookmarkRef = document.createElementNS(NS_TEXT, "text:bookmark-ref");
-        bookmarkRef.setAttributeNS(NS_TEXT, "text:reference-format", "chapter");
-        bookmarkRef.setAttributeNS(NS_TEXT, "text:ref-name", name);
-
-        for (Node node : createNodesForText(document, text))
-            bookmarkRef.appendChild(node);
-
-        return bookmarkRef;
-    }
 }

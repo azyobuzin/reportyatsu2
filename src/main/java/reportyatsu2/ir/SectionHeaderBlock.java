@@ -65,7 +65,14 @@ public class SectionHeaderBlock extends Block implements Referable {
     public List<Node> createReferenceNodes(Document document) {
         // 「1章」、「1.1節」、「1.1.1項」のように表示
         String text = getDisplaySequenceNumber() + REFERENCE_SUFFIXES[getOutlineLevel() - 1];
-        Element bookmarkRef = createChapterBookmarkRef(document, getId(), text);
+
+        Element bookmarkRef = document.createElementNS(NS_TEXT, "text:bookmark-ref");
+        bookmarkRef.setAttributeNS(NS_TEXT, "text:reference-format", "chapter");
+        bookmarkRef.setAttributeNS(NS_TEXT, "text:ref-name", getId());
+
+        for (Node node : createNodesForText(document, text))
+            bookmarkRef.appendChild(node);
+
         return Collections.singletonList(bookmarkRef);
     }
 

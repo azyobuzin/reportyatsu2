@@ -122,8 +122,15 @@ public class Literature implements Referable {
 
     @Override
     public List<Node> createReferenceNodes(Document document) {
-        return Collections.singletonList(createChapterBookmarkRef(
-            document, getId(), String.format("[%d]", getSequenceNumber())));
+        Element bookmarkRef = document.createElementNS(NS_TEXT, "text:bookmark-ref");
+        bookmarkRef.setAttributeNS(NS_TEXT, "text:reference-format", "number");
+        bookmarkRef.setAttributeNS(NS_TEXT, "text:ref-name", getId());
+
+        String text = String.format("[%d]", getSequenceNumber());
+        for (Node node : createNodesForText(document, text))
+            bookmarkRef.appendChild(node);
+
+        return Collections.singletonList(bookmarkRef);
     }
 
     @Override

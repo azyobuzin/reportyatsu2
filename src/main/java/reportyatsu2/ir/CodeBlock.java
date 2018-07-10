@@ -25,7 +25,7 @@ public class CodeBlock extends CaptionBlock {
     public String getCode() { return code; }
 
     @Override
-    protected String getSequenceName() { return "List"; }
+    protected String getSequenceName() { return "リスト"; }
 
     @Override
     protected String getSequenceDisplayName() { return "リスト"; }
