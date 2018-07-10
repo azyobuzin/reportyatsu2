@@ -180,7 +180,7 @@ public class IrToOdfPackageTransformer {
         entry.setCompressedSize(mimeTypeData.length);
 
         // STORED では CRC32 の計算も自分で行う必要がある
-        var crc = new CRC32();
+        CRC32 crc = new CRC32();
         crc.update(mimeTypeData);
         entry.setCrc(crc.getValue());
 
@@ -208,9 +208,9 @@ public class IrToOdfPackageTransformer {
         // ルート
         root.appendChild(createFileEntry(manifestDocument, "/", OPEN_DOCUMENT_TEXT_MIME_TYPE));
         // content.xml
-        root.appendChild(createFileEntry(manifestDocument, "content.xml", OPEN_DOCUMENT_TEXT_MIME_TYPE));
+        root.appendChild(createFileEntry(manifestDocument, "content.xml", XML_MIME_TYPE));
         // styles.xml
-        root.appendChild(createFileEntry(manifestDocument, "styles.xml", OPEN_DOCUMENT_TEXT_MIME_TYPE));
+        root.appendChild(createFileEntry(manifestDocument, "styles.xml", XML_MIME_TYPE));
 
         // 画像ファイル
         for (AdditionalFileInfo file : additionalFiles)

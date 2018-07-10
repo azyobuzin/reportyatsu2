@@ -49,6 +49,7 @@ public final class OdfUtils {
     public static final String STYLE_CODE_BLOCK_CODE_CELL_ONE_LINE = "CodeBlock.CodeCell.OneLine";
 
     public static final String OPEN_DOCUMENT_TEXT_MIME_TYPE = "application/vnd.oasis.opendocument.text";
+    public static final String XML_MIME_TYPE = "text/xml";
 
     public static final String CONTENT_XML_PATH = "content.xml";
     public static final String STYLES_XML_PATH = "styles.xml";

@@ -88,7 +88,7 @@ public class App {
         Document inputDocument;
         try (InputStream inputStream = Files.newInputStream(inputFilePath)) {
             inputDocument = new InputLoader().loadToDom(inputStream);
-        } catch (SAXException e) {
+        } catch (InputXmlException e) {
             System.err.println("入力された XML にエラーがありました。");
             System.err.println(e.getMessage());
             abort();
